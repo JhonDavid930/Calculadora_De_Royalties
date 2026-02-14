@@ -2,7 +2,8 @@
 
 **RoyaltyPro** es un estimador de ingresos diseñado específicamente para el ecosistema del **Music Business**. Permite a artistas, sellos discográficos, managers y cantantes proyectar sus ganancias por streaming de manera rápida, precisa y profesional.
 
-![Vista de la Aplicación](https://raw.githubusercontent.com/JhonDavid930/Calculadora_De_Royalties/main/public/demo_screenshot.png) *(Nota: Imagen de referencia)*
+![Vista de la Aplicación](public/screenshot.png)
+
 
 ## 🎵 ¿Para qué sirve este proyecto?
 
