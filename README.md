@@ -3,6 +3,7 @@
 **RoyaltyPro** es un estimador de ingresos diseñado específicamente para el ecosistema del **Music Business**. Permite a artistas, sellos discográficos, managers y cantantes proyectar sus ganancias por streaming de manera rápida, precisa y profesional.
 
 ![Vista de la Aplicación](public/screenshot.png)
+![Calculadora de Metas Musicales - RoyaltyPro](public/calculadora-royalties-musicales-spotify-streams.png)
 
 
 ## 🎵 ¿Para qué sirve este proyecto?
