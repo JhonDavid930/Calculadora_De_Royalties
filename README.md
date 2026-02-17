@@ -17,20 +17,23 @@ En la industria musical actual, entender cuánto dinero genera tu música en pla
 
 ## 🚀 Ficha Técnica
 
-Este proyecto ha sido desarrollado con tecnologías modernas para garantizar velocidad y una experiencia de usuario premium.
+Este proyecto utiliza tecnologías de vanguardia para garantizar precisión financiera y una experiencia de usuario fluida.
 
-- **Frontend**: [React.js](https://reactjs.org/) (Hooks, UseMemo para cálculos en tiempo real).
-- **Estilos**: [Tailwind CSS](https://tailwindcss.com/) (Diseño "Dark Mode" inspirado en plataformas de streaming).
-- **Gráficos**: [Recharts](https://recharts.org/) (Visualización interactiva de distribución de ingresos).
-- **Iconos**: [Lucide React](https://lucide.dev/).
-- **Herramienta de Construcción**: [Vite](https://vitejs.dev/) para una carga ultra rápida.
+- **Frontend**: [React.js](https://reactjs.org/) con Custom Hooks para gestión de estado complejo.
+- **Precisión Financiera**: [currency.js](https://currency.js.org/) para evitar errores aritméticos de coma flotante en cálculos monetarios.
+- **Validación de Datos**: [Zod](https://zod.dev/) para asegurar la integridad de los datos de entrada.
+- **Persistencia**: `localStorage` para autoguardado de progreso entre sesiones y cambios de vista.
+- **Estilos**: [Tailwind CSS](https://tailwindcss.com/) (Diseño "Dark Mode" premium inspirado en Spotify).
+- **Gráficos**: [Recharts](https://recharts.org/) (Distribución de ingresos interactiva).
+- **Herramienta de Construcción**: [Vite](https://vitejs.dev/).
 
 ## 🛠️ Características Principales
 
-1. **Modo Rápido**: Ingresa un número total de streams y obtén una cifra global instantánea.
-2. **Modo Detallado**: Desglose país por país usando una base de datos interna de tarifas por territorio (Tier 1 a Tier 5).
-3. **Planificador de Metas**: Define un objetivo en dólares y el sistema calcula el tráfico necesario.
-4. **Visualización de Datos**: Gráficos circulares que muestran qué países están generando mayor rentabilidad en tu catálogo.
+1. **Modo Detallado con Persistencia**: Desglose por país con autoguardado en tiempo real. No pierdes tus datos al recargar o cambiar de pestaña.
+2. **Selector Masivo de Países**: Interfaz optimizada para añadir múltiples territorios simultáneamente.
+3. **Modales Premium**: Sistema de confirmación personalizado para una navegación coherente y profesional.
+4. **Cálculos de Alta Precisión**: Motor de cálculo robusto que maneja streams y tasas variables con decimales exactos.
+5. **Planificador de Metas**: Define objetivos en dólares y descubre cuántos streams necesitas en cada mercado.
 
 ## 📦 Instalación y Uso Local
 
