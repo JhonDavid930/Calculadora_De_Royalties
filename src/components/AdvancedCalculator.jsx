@@ -8,6 +8,7 @@ import {
     Plus,
     Trash2,
     RefreshCcw,
+    Layers
 } from 'lucide-react';
 import {
     PieChart,
@@ -19,70 +20,46 @@ import {
 import Card from './ui/Card';
 import StatBox from './ui/StatBox';
 import { COUNTRY_DB, COLORS } from '../constants/countries';
+import CountrySelectorModal from './ui/CountrySelectorModal';
+import CompactCountryList from './ui/CompactCountryList';
+import ConfirmModal from './ui/ConfirmModal';
+
+import { useRoyaltyCalculations } from '../hooks/useRoyaltyCalculations';
 
 const AdvancedCalculator = () => {
-    const [countryData, setCountryData] = useState([
-        { id: 1, country: '', streams: 0, rate: 0, tier: null }
-    ]);
+    const {
+        countryData,
+        totalStreams,
+        totalRevenue,
+        effectiveRPM,
+        chartData,
+        updateCountryStream,
+        updateCountryRate,
+        selectCountry,
+        handleAddCountries,
+        addEmptyRow,
+        removeCountry,
+        resetData: resetCalculations
+    } = useRoyaltyCalculations();
 
-    const totalStreams = useMemo(() => countryData.reduce((acc, curr) => acc + curr.streams, 0), [countryData]);
-    const totalRevenue = useMemo(() => countryData.reduce((acc, curr) => acc + (curr.streams * curr.rate), 0), [countryData]);
-    const effectiveRPM = useMemo(() => totalStreams > 0 ? (totalRevenue / totalStreams) * 1000 : 0, [totalRevenue, totalStreams]);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isConfirmResetOpen, setIsConfirmResetOpen] = useState(false);
 
-    const chartData = useMemo(() => {
-        const data = countryData
-            .filter(item => item.country && item.streams > 0)
-            .map(item => ({ name: item.country, value: item.streams * item.rate }))
-            .sort((a, b) => b.value - a.value);
-
-        return data.length > 0 ? data : [{ name: 'Sin datos', value: 1 }];
+    // Determinar si hay datos para limpiar
+    const hasData = useMemo(() => {
+        return countryData.some(c => c.country || c.streams > 0);
     }, [countryData]);
 
-    const updateCountryStream = (id, newVal) => {
-        setCountryData(prev => prev.map(c => c.id === id ? { ...c, streams: Math.max(0, Number(newVal)) } : c));
-    };
-
-    const updateCountryRate = (id, newRate) => {
-        setCountryData(prev => prev.map(c => c.id === id ? { ...c, rate: Number(newRate) } : c));
-    };
-
-    const selectCountry = (id, countryName) => {
-        const dbCountry = COUNTRY_DB.find(c => c.name === countryName);
-
-        setCountryData(prev => prev.map(c => {
-            if (c.id === id) {
-                return {
-                    ...c,
-                    country: countryName,
-                    rate: dbCountry ? dbCountry.rate : 0,
-                    tier: dbCountry ? dbCountry.tier : null
-                };
-            }
-            return c;
-        }));
-    };
-
-    const addCountry = () => {
-        const newId = Math.max(...countryData.map(c => c.id), 0) + 1;
-        setCountryData([...countryData, { id: newId, country: '', streams: 0, rate: 0, tier: null }]);
-    };
-
-    const removeCountry = (id) => {
-        if (countryData.length > 1) {
-            setCountryData(countryData.filter(c => c.id !== id));
-        } else {
-            setCountryData([{ id: 1, country: '', streams: 0, rate: 0, tier: null }]);
-        }
-    };
-
     const resetData = () => {
-        if (confirm('¿Estás seguro de limpiar toda la tabla?')) {
-            setCountryData([{ id: 1, country: '', streams: 0, rate: 0, tier: null }]);
-        }
+        setIsConfirmResetOpen(true);
     }
 
     const formatCurrency = (val) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(val);
     const formatNumber = (val) => new Intl.NumberFormat('en-US').format(val);
+
+    // Logic to split the view
+    const primaryCountries = countryData.slice(0, 5);
+    const secondaryCountries = countryData.slice(5);
 
     return (
         <div className="space-y-6 animate-fadeIn">
@@ -120,8 +97,8 @@ const AdvancedCalculator = () => {
                                 <button onClick={resetData} className="text-xs text-text-secondary hover:text-text-primary flex items-center gap-1 bg-dark-border px-3 py-2 rounded hover:bg-dark-hover transition-colors">
                                     <RefreshCcw className="w-3 h-3" /> Limpiar
                                 </button>
-                                <button onClick={addCountry} className="text-xs text-black font-bold flex items-center gap-1 bg-spotify-green px-3 py-2 rounded hover:bg-spotify-light transition-colors shadow-lg shadow-green-900/20">
-                                    <Plus className="w-3 h-3" /> Agregar Fila
+                                <button onClick={() => setIsModalOpen(true)} className="text-xs text-black font-bold flex items-center gap-1 bg-spotify-green px-3 py-2 rounded hover:bg-spotify-light transition-colors shadow-lg shadow-green-900/20">
+                                    <Layers className="w-3 h-3" /> Selector Masivo
                                 </button>
                             </div>
                         </div>
@@ -135,9 +112,9 @@ const AdvancedCalculator = () => {
                                 <div className="md:col-span-2 text-right">Total</div>
                             </div>
 
-                            {/* Filas de Datos */}
+                            {/* Filas de Datos (PRIMARY - Top 5) */}
                             <div className="space-y-4 md:space-y-0">
-                                {countryData.map((item) => (
+                                {primaryCountries.map((item) => (
                                     <div
                                         key={item.id}
                                         className="group bg-dark-bg md:bg-transparent p-4 md:p-0 rounded-lg md:rounded-none border border-dark-border md:border-0 md:border-b md:border-dark-border md:hover:bg-dark-hover transition-colors grid grid-cols-1 md:grid-cols-12 gap-4 items-center relative"
@@ -161,9 +138,9 @@ const AdvancedCalculator = () => {
                                                 </select>
                                                 {item.tier && (
                                                     <span className={`absolute right-8 md:right-4 top-1/2 transform -translate-y-1/2 text-[10px] px-1.5 py-0.5 rounded border ${item.tier === 1 ? 'border-green-500 text-green-500' :
-                                                            item.tier === 2 ? 'border-blue-500 text-blue-500' :
-                                                                item.tier === 3 ? 'border-yellow-500 text-yellow-500' :
-                                                                    'border-orange-500 text-orange-500'
+                                                        item.tier === 2 ? 'border-blue-500 text-blue-500' :
+                                                            item.tier === 3 ? 'border-yellow-500 text-yellow-500' :
+                                                                'border-orange-500 text-orange-500'
                                                         } pointer-events-none`}>
                                                         T{item.tier}
                                                     </span>
@@ -176,7 +153,7 @@ const AdvancedCalculator = () => {
                                             <label className="block md:hidden text-xs text-text-secondary mb-1">Streams</label>
                                             <input
                                                 type="number"
-                                                className="bg-transparent border-b border-dark-hover focus:border-spotify-green text-right w-full p-2 md:p-1.5 outline-none text-text-primary font-mono placeholder-dark-hover text-base"
+                                                className="bg-transparent border-b border-dark-hover focus:border-spotify-green text-right w-full p-2 md:p-1.5 outline-none text-text-primary font-mono placeholder-dark-hover text-base transition-colors"
                                                 value={item.streams || ''}
                                                 placeholder="0"
                                                 disabled={!item.country}
@@ -218,20 +195,29 @@ const AdvancedCalculator = () => {
                             </div>
                         </div>
 
-                        {countryData.length < 5 && (
-                            <button onClick={addCountry} className="w-full mt-2 py-3 md:py-2 border border-dashed border-dark-hover rounded text-text-muted hover:text-spotify-green hover:border-spotify-green text-sm transition-all flex items-center justify-center gap-2">
-                                <Plus className="w-4 h-4" /> Agregar otro país
-                            </button>
-                        )}
+                        {/* Botón Simple para agregar fila manualmente */}
+                        <button onClick={addEmptyRow} className="w-full mt-4 py-3 md:py-2 border border-dashed border-dark-hover rounded text-text-muted hover:text-spotify-green hover:border-spotify-green text-sm transition-all flex items-center justify-center gap-2">
+                            <Plus className="w-4 h-4" /> Agregar fila vacía
+                        </button>
 
                         <div className="mt-4 pt-4 border-t border-dark-border text-xs text-text-secondary flex items-start gap-2">
                             <Info className="w-4 h-4 mt-0.5 flex-shrink-0" />
                             <p>
-                                Selecciona un país y el sistema cargará automáticamente la tarifa (Tier) recomendada.
-                                Ajusta los streams para ver la proyección.
+                                Tip: Usa el "Selector Masivo" para agregar múltiples países rápidamente.
+                                Las primeras 5 filas se muestran aquí, el resto aparecerá en el listado compacto abajo.
                             </p>
                         </div>
                     </Card>
+
+                    {/* Secondary Countries List (Compact) */}
+                    {secondaryCountries.length > 0 && (
+                        <CompactCountryList
+                            countries={secondaryCountries}
+                            onUpdateStream={updateCountryStream}
+                            onUpdateRate={updateCountryRate}
+                            onRemove={removeCountry}
+                        />
+                    )}
                 </div>
 
                 <div className="space-y-6">
@@ -295,8 +281,29 @@ const AdvancedCalculator = () => {
                     </Card>
                 </div>
             </div>
+
+            {/* Modals */}
+            <CountrySelectorModal
+                isOpen={isModalOpen}
+                onClose={() => setIsModalOpen(false)}
+                onAddCountries={handleAddCountries}
+                existingCountries={countryData}
+            />
+
+            <ConfirmModal
+                isOpen={isConfirmResetOpen}
+                onClose={() => setIsConfirmResetOpen(false)}
+                onConfirm={resetCalculations}
+                title={hasData ? "¿Limpiar tabla?" : "Tabla vacía"}
+                message={hasData
+                    ? "Esta acción eliminará todos los streams y países ingresados. No se puede deshacer."
+                    : "No hay datos ingresados para limpiar. La tabla ya está en su estado inicial."}
+                confirmText={hasData ? "Limpiar todo" : null}
+                cancelText={hasData ? "Mantener datos" : "Entendido"}
+            />
         </div>
     );
 };
 
 export default AdvancedCalculator;
+
