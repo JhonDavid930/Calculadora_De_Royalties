@@ -46,9 +46,9 @@ export const COUNTRY_DB = [
   { name: 'Uruguay', rate: 0.0018, tier: 4, code: 'UY' },
   { name: 'Paraguay', rate: 0.0015, tier: 4, code: 'PY' },
   { name: 'Bolivia', rate: 0.0015, tier: 4, code: 'BO' },
-  { name: 'Dominican Republic', rate: 0.0015, tier: 4, code: 'DO' },
+  { name: 'Dom. Rep.', rate: 0.0015, tier: 4, code: 'DO' },
   { name: 'Panama', rate: 0.0016, tier: 4, code: 'PA' },
-  
+
   // TIER 5 (Volume/Emerging ~0.0008 - 0.0012)
   { name: 'India', rate: 0.0010, tier: 5, code: 'IN' },
   { name: 'Philippines', rate: 0.0012, tier: 5, code: 'PH' },
