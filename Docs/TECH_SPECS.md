@@ -5,7 +5,7 @@ Este proyecto utiliza una arquitectura moderna y reactiva, optimizada para rendi
 
 ### Core
 - **Framework:** React 18 (Crea interfaces de usuario dinámicas).
-- **Build Tool:** Vite (Empaquetador ultrarrápido).
+- **Build Tool:** Vite (Empaquetador ultrarrápido). Configuradocon **Chunk Splitting** para optimizar la carga (Vendor, Charts, Icons separados).
 - **Lenguaje:** JavaScript (ES6+).
 
 ### Estilos & UI

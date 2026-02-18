@@ -7,6 +7,7 @@ Versión actual: **v1.1.0** (Testing & Precision Update)
 - **Testing Suite:** Integración completa de Vitest y React Testing Library.
 - **Unit Tests:** Cobertura del 100% para lógica de `useRoyaltyCalculations`.
 - **Component Tests:** Verificación de renderizado y modales en `AdvancedCalculator`.
+- **Build Optimization:** Configuración de `manualChunks` en Vite para separar vendor, charts e icons, reduciendo el tamaño del bundle principal.
 
 ## [v1.0.5] - UX Precision Update
 ### Añadido
