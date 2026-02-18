@@ -21,7 +21,6 @@ import Card from './ui/Card';
 import StatBox from './ui/StatBox';
 import { COUNTRY_DB, COLORS } from '../constants/countries';
 import CountrySelectorModal from './ui/CountrySelectorModal';
-import CompactCountryList from './ui/CompactCountryList';
 import ConfirmModal from './ui/ConfirmModal';
 
 import { useRoyaltyCalculations } from '../hooks/useRoyaltyCalculations';
@@ -57,9 +56,9 @@ const AdvancedCalculator = () => {
     const formatCurrency = (val) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(val);
     const formatNumber = (val) => new Intl.NumberFormat('en-US').format(val);
 
-    // Logic to split the view
-    const primaryCountries = countryData.slice(0, 5);
-    const secondaryCountries = countryData.slice(5);
+    // Logic to split the view - REMOVED for unified scrolling list
+    // const primaryCountries = countryData.slice(0, 5);
+    // const secondaryCountries = countryData.slice(5);
 
     return (
         <div className="space-y-6 animate-fadeIn">
@@ -112,9 +111,9 @@ const AdvancedCalculator = () => {
                                 <div className="md:col-span-2 text-right">Total</div>
                             </div>
 
-                            {/* Filas de Datos (PRIMARY - Top 5) */}
-                            <div className="space-y-4 md:space-y-0">
-                                {primaryCountries.map((item) => (
+                            {/* Filas de Datos (Unified List) */}
+                            <div className="space-y-4 md:space-y-0 max-h-[500px] overflow-y-auto custom-scrollbar pr-2">
+                                {countryData.map((item) => (
                                     <div
                                         key={item.id}
                                         className="group bg-dark-bg md:bg-transparent p-4 md:p-0 rounded-lg md:rounded-none border border-dark-border md:border-0 md:border-b md:border-dark-border md:hover:bg-dark-hover transition-colors grid grid-cols-1 md:grid-cols-12 gap-4 items-center relative"
@@ -209,15 +208,7 @@ const AdvancedCalculator = () => {
                         </div>
                     </Card>
 
-                    {/* Secondary Countries List (Compact) */}
-                    {secondaryCountries.length > 0 && (
-                        <CompactCountryList
-                            countries={secondaryCountries}
-                            onUpdateStream={updateCountryStream}
-                            onUpdateRate={updateCountryRate}
-                            onRemove={removeCountry}
-                        />
-                    )}
+                    {/* Secondary Countries List (Compact) - REMOVED */}
                 </div>
 
                 <div className="space-y-6">
