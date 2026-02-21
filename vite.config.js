@@ -36,6 +36,7 @@ export default defineConfig({
     globals: true,
     environment: 'jsdom',
     setupFiles: './src/setupTests.js',
+    exclude: ['node_modules', 'dist', '.idea', '.git', '.cache', 'e2e/*', 'tests/*'],
   },
   build: {
     rollupOptions: {
