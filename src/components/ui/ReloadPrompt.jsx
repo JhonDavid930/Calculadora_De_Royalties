@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useRegisterSW } from 'virtual:pwa-register/react';
 import { X, RefreshCcw } from 'lucide-react';
 
@@ -8,13 +8,40 @@ export default function ReloadPrompt() {
         needRefresh: [needRefresh, setNeedRefresh],
         updateServiceWorker,
     } = useRegisterSW({
-        onRegistered(r) {
+        onRegisteredSW(swUrl, r) {
             console.log('SW Registered: ' + r);
+            if (r) {
+                // Check for updates every hour
+                setInterval(() => {
+                    r.update();
+                }, 60 * 60 * 1000);
+            }
         },
         onRegisterError(error) {
             console.log('SW registration error', error);
         },
     });
+
+    // Also check for update when the user brings the app back to foreground
+    useEffect(() => {
+        const handleFocus = () => {
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.ready.then(registration => {
+                    registration.update();
+                });
+            }
+        };
+
+        window.addEventListener('focus', handleFocus);
+        document.addEventListener('visibilitychange', () => {
+            if (document.visibilityState === 'visible') handleFocus();
+        });
+
+        return () => {
+            window.removeEventListener('focus', handleFocus);
+            document.removeEventListener('visibilitychange', handleFocus);
+        };
+    }, []);
 
     const close = () => {
         setNeedRefresh(false);
