@@ -87,9 +87,9 @@ export default function InstallPrompt() {
                         <div className="absolute top-0 inset-x-0 h-32 bg-gradient-to-b from-spotify-green/20 to-transparent pointer-events-none" />
 
                         <div className="p-8 text-center relative z-10">
-                            {/* App Icon */}
-                            <div className="mx-auto w-20 h-20 bg-black rounded-2xl border border-white/10 shadow-2xl overflow-hidden mb-6 flex items-center justify-center">
-                                <img src="/pwa-192x192.png" alt="RoyaltyPro Icon" className="w-full h-full object-cover" />
+                            {/* App Icon (Transparent) */}
+                            <div className="mx-auto w-24 h-24 overflow-hidden mb-6 flex items-center justify-center drop-shadow-[0_0_15px_rgba(29,185,84,0.4)]">
+                                <img src="/pwa-192x192.png" alt="RoyaltyPro Icon" className="w-full h-full object-contain" />
                             </div>
 
                             <h3 className="text-2xl font-bold text-white tracking-tight mb-2">Instalar RoyaltyPro</h3>
