@@ -15,8 +15,8 @@ export default defineConfig({
       },
       includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'pwa-192x192.png', 'pwa-512x512.png'],
       manifest: {
-        name: 'Calculadora de Royalties',
-        short_name: 'Royalties',
+        name: 'RoyaltyPro',
+        short_name: 'RoyaltyPro',
         description: 'Calculadora Profesional de Regalías Musicales',
         theme_color: '#0a0a0a',
         background_color: '#000000',
