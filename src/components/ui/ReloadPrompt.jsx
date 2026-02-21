@@ -1,10 +1,13 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useRegisterSW } from 'virtual:pwa-register/react';
 import { X, RefreshCcw } from 'lucide-react';
 
 export default function ReloadPrompt() {
+    // Local UI state — controls whether the user temporarily dismissed the prompt
+    const [dismissed, setDismissed] = useState(false);
+
     const {
-        needRefresh: [needRefresh, setNeedRefresh],
+        needRefresh: [needRefresh],
         updateServiceWorker,
     } = useRegisterSW({
         onRegisteredSW(swUrl, r) {
@@ -21,28 +24,36 @@ export default function ReloadPrompt() {
         },
     });
 
-    // Also check for update when the user brings the app back to foreground
+    // When the user brings the app back to foreground:
+    // 1. Check for SW updates
+    // 2. Re-show the prompt if there's a pending update
+    const handleAppFocus = useCallback(() => {
+        // Re-show the prompt if the user dismissed it but the update is still pending
+        if (needRefresh) {
+            setDismissed(false);
+        }
+
+        // Also trigger an update check
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.ready.then(registration => {
+                registration.update();
+            });
+        }
+    }, [needRefresh]);
+
     useEffect(() => {
-        const handleFocus = () => {
-            if ('serviceWorker' in navigator) {
-                navigator.serviceWorker.ready.then(registration => {
-                    registration.update();
-                });
-            }
-        };
-
         const handleVisibilityChange = () => {
-            if (document.visibilityState === 'visible') handleFocus();
+            if (document.visibilityState === 'visible') handleAppFocus();
         };
 
-        window.addEventListener('focus', handleFocus);
+        window.addEventListener('focus', handleAppFocus);
         document.addEventListener('visibilitychange', handleVisibilityChange);
 
         return () => {
-            window.removeEventListener('focus', handleFocus);
+            window.removeEventListener('focus', handleAppFocus);
             document.removeEventListener('visibilitychange', handleVisibilityChange);
         };
-    }, []);
+    }, [handleAppFocus]);
 
     // Debug: log when needRefresh state changes
     useEffect(() => {
@@ -51,17 +62,18 @@ export default function ReloadPrompt() {
         }
     }, [needRefresh]);
 
-    const close = () => {
-        setNeedRefresh(false);
+    // User temporarily dismisses — prompt will reappear on next app focus
+    const dismiss = () => {
+        setDismissed(true);
     };
 
-    if (!needRefresh) return null;
+    if (!needRefresh || dismissed) return null;
 
     return (
         <div className="fixed bottom-4 right-4 z-50 animate-in slide-in-from-bottom-5 fade-in duration-300">
             <div className="bg-dark-elem border border-dark-border rounded-xl shadow-2xl p-4 max-w-sm w-full relative">
                 <button
-                    onClick={close}
+                    onClick={dismiss}
                     className="absolute top-2 right-2 p-1 text-text-secondary hover:text-white rounded-full hover:bg-dark-hover transition-colors"
                     aria-label="Cerrar notificación"
                 >

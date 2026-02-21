@@ -1,10 +1,9 @@
 /* eslint-disable no-undef */
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, act } from '@testing-library/react';
 
 // Mock the virtual module from vite-plugin-pwa
 const mockUpdateServiceWorker = vi.fn();
 let mockNeedRefresh = false;
-const mockSetNeedRefresh = vi.fn((val) => { mockNeedRefresh = val; });
 
 vi.mock('virtual:pwa-register/react', () => ({
     useRegisterSW: (options) => {
@@ -13,7 +12,7 @@ vi.mock('virtual:pwa-register/react', () => ({
             options.onRegisteredSW('http://localhost/sw.js', { update: vi.fn() });
         }
         return {
-            needRefresh: [mockNeedRefresh, mockSetNeedRefresh],
+            needRefresh: [mockNeedRefresh],
             updateServiceWorker: mockUpdateServiceWorker,
         };
     },
@@ -53,14 +52,37 @@ describe('ReloadPrompt Component', () => {
         expect(mockUpdateServiceWorker).toHaveBeenCalledWith(true);
     });
 
-    it('should dismiss the prompt when the close button is clicked', () => {
+    it('should temporarily dismiss the prompt when the close button is clicked', () => {
         mockNeedRefresh = true;
         render(<ReloadPrompt />);
 
+        // Prompt should be visible
+        expect(screen.getByText('Nueva actualización disponible')).toBeInTheDocument();
+
+        // Click close
         const closeButton = screen.getByRole('button', { name: /Cerrar notificación/i });
         fireEvent.click(closeButton);
 
-        expect(mockSetNeedRefresh).toHaveBeenCalledWith(false);
+        // Prompt should be hidden (dismissed)
+        expect(screen.queryByText('Nueva actualización disponible')).not.toBeInTheDocument();
+    });
+
+    it('should re-show the prompt after dismiss when app gains focus', () => {
+        mockNeedRefresh = true;
+        render(<ReloadPrompt />);
+
+        // Dismiss the prompt
+        const closeButton = screen.getByRole('button', { name: /Cerrar notificación/i });
+        fireEvent.click(closeButton);
+        expect(screen.queryByText('Nueva actualización disponible')).not.toBeInTheDocument();
+
+        // Simulate user coming back to the app
+        act(() => {
+            window.dispatchEvent(new Event('focus'));
+        });
+
+        // Prompt should reappear because needRefresh is still true
+        expect(screen.getByText('Nueva actualización disponible')).toBeInTheDocument();
     });
 
     it('should register visibility change and focus listeners for update checks', () => {
