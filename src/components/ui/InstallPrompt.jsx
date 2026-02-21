@@ -73,37 +73,53 @@ export default function InstallPrompt() {
 
             {/* iOS manual instructions modal */}
             {showIOSPrompt && (
-                <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/80 backdrop-blur-sm p-4 animate-fadeIn">
-                    <div className="bg-dark-elem border border-dark-border w-full max-w-sm rounded-2xl shadow-2xl overflow-hidden animate-slideUp">
-                        <div className="p-6 text-center">
-                            <h3 className="text-xl font-bold text-white mb-2">Instalar en iPhone</h3>
-                            <p className="text-sm text-text-secondary mb-6">
-                                Apple no permite instalación automática. Para instalar la app, sigue estos pasos:
+                <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-4 sm:p-0">
+                    {/* Backdrop */}
+                    <div
+                        className="fixed inset-0 bg-black/60 backdrop-blur-md transition-opacity animate-in fade-in duration-300"
+                        onClick={() => setShowIOSPrompt(false)}
+                    />
+
+                    {/* Modal Content */}
+                    <div className="bg-dark-elem/90 backdrop-blur-xl border border-white/10 w-full max-w-sm rounded-[2rem] shadow-2xl overflow-hidden relative animate-in slide-in-from-bottom-8 sm:slide-in-from-bottom-0 sm:zoom-in-95 duration-300">
+
+                        {/* Decorative top gradient */}
+                        <div className="absolute top-0 inset-x-0 h-32 bg-gradient-to-b from-spotify-green/20 to-transparent pointer-events-none" />
+
+                        <div className="p-8 text-center relative z-10">
+                            {/* App Icon */}
+                            <div className="mx-auto w-20 h-20 bg-black rounded-2xl border border-white/10 shadow-2xl overflow-hidden mb-6 flex items-center justify-center">
+                                <img src="/pwa-192x192.png" alt="RoyaltyPro Icon" className="w-full h-full object-cover" />
+                            </div>
+
+                            <h3 className="text-2xl font-bold text-white tracking-tight mb-2">Instalar RoyaltyPro</h3>
+                            <p className="text-sm text-text-secondary mb-8">
+                                Disfruta de la app en pantalla completa y acceso sin conexión en tu iPhone.
                             </p>
 
-                            <div className="space-y-4 text-left">
-                                <div className="flex items-center gap-4 bg-dark-bg p-4 rounded-xl">
-                                    <div className="w-10 h-10 bg-blue-500/10 text-blue-500 rounded-full flex items-center justify-center shrink-0">
+                            <div className="space-y-3 text-left mb-8">
+                                <div className="flex items-center gap-4 bg-black/40 border border-white/5 p-4 rounded-2xl">
+                                    <div className="w-10 h-10 bg-blue-500/20 text-blue-400 rounded-full flex items-center justify-center shrink-0">
                                         <Share className="w-5 h-5" />
                                     </div>
-                                    <p className="text-sm text-white">
-                                        Pulsa el botón <strong>Compartir</strong> en la barra inferior de Safari.
+                                    <p className="text-sm text-text-primary">
+                                        Toca <strong>Compartir</strong> en la barra inferior de Safari.
                                     </p>
                                 </div>
 
-                                <div className="flex items-center gap-4 bg-dark-bg p-4 rounded-xl">
-                                    <div className="w-10 h-10 bg-spotify-green/10 text-spotify-green rounded-full flex items-center justify-center shrink-0">
+                                <div className="flex items-center gap-4 bg-black/40 border border-white/5 p-4 rounded-2xl">
+                                    <div className="w-10 h-10 bg-spotify-green/20 text-spotify-green rounded-full flex items-center justify-center shrink-0">
                                         <PlusSquare className="w-5 h-5" />
                                     </div>
-                                    <p className="text-sm text-white">
-                                        Desliza hacia abajo y pulsa <strong>Añadir a la pantalla de inicio</strong>.
+                                    <p className="text-sm text-text-primary">
+                                        Selecciona <strong>Añadir a la pantalla de inicio</strong>.
                                     </p>
                                 </div>
                             </div>
 
                             <button
                                 onClick={() => setShowIOSPrompt(false)}
-                                className="mt-8 w-full bg-dark-hover hover:bg-dark-border text-white font-bold py-3 rounded-xl transition-colors"
+                                className="w-full bg-white hover:bg-gray-200 text-black font-bold py-3.5 rounded-2xl transition-all shadow-[0_0_40px_-10px_rgba(255,255,255,0.3)]"
                             >
                                 Entendido
                             </button>
