@@ -10,8 +10,6 @@ export default defineConfig({
       registerType: 'prompt',
       workbox: {
         cleanupOutdatedCaches: true,
-        skipWaiting: true,
-        clientsClaim: true,
       },
       includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'pwa-192x192.png', 'pwa-512x512.png'],
       manifest: {
