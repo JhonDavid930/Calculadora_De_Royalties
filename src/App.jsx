@@ -8,6 +8,7 @@ import {
 import SimpleCalculator from './components/SimpleCalculator';
 import AdvancedCalculator from './components/AdvancedCalculator';
 import GoalCalculator from './components/GoalCalculator';
+import ReloadPrompt from './components/ui/ReloadPrompt';
 
 export default function App() {
   const [activeTab, setActiveTab] = useState('advanced');
@@ -44,8 +45,8 @@ export default function App() {
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
                 className={`flex items-center gap-2 px-4 py-1.5 rounded-full text-sm font-medium transition-all whitespace-nowrap ${activeTab === tab.id
-                    ? 'bg-spotify-green text-black shadow-lg shadow-green-900/20'
-                    : 'text-text-secondary hover:text-white hover:bg-dark-hover'
+                  ? 'bg-spotify-green text-black shadow-lg shadow-green-900/20'
+                  : 'text-text-secondary hover:text-white hover:bg-dark-hover'
                   }`}
               >
                 <tab.icon className="w-4 h-4" />
@@ -59,6 +60,8 @@ export default function App() {
       <main className="max-w-6xl mx-auto px-4 py-8">
         {renderContent()}
       </main>
+
+      <ReloadPrompt />
     </div>
   );
 }

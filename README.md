@@ -15,6 +15,21 @@ En la industria musical actual, entender cuánto dinero genera tu música en pla
 - **Establecer Metas Financieras**: ¿Quieres ganar $1,000 USD al mes? Nuestra herramienta te dice exactamente cuántos streams necesitas según tu audiencia.
 - **Análisis de RPM**: Visualiza tu "Ingreso por cada mil reproducciones" efectivo.
 
+## 🧪 Testing
+
+Para garantizar fiabilidad absoluta en cálculos monetarios y en la experiencia de usuario, contamos con un sólido stack de pruebas:
+
+- **Tests Lógicos:** Vitest + React Testing Library.
+- **Tests UI (E2E):** Microsoft Playwright.
+
+```bash
+# Correr tests lógicos (Vitest)
+npm run test
+
+# Correr tests E2E de UI (Playwright)
+npm run test:e2e
+```
+
 ## 🚀 Ficha Técnica
 
 Este proyecto utiliza tecnologías de vanguardia para garantizar precisión financiera y una experiencia de usuario fluida.
@@ -27,13 +42,14 @@ Este proyecto utiliza tecnologías de vanguardia para garantizar precisión fina
 - **Gráficos**: [Recharts](https://recharts.org/) (Distribución de ingresos interactiva).
 - **Herramienta de Construcción**: [Vite](https://vitejs.dev/).
 
-## 🛠️ Características Principales
-
-1. **Modo Detallado con Persistencia**: Desglose por país con autoguardado en tiempo real. No pierdes tus datos al recargar o cambiar de pestaña.
-2. **Selector Masivo de Países**: Interfaz optimizada para añadir múltiples territorios simultáneamente.
-3. **Modales Premium**: Sistema de confirmación personalizado para una navegación coherente y profesional.
-4. **Cálculos de Alta Precisión**: Motor de cálculo robusto que maneja streams y tasas variables con decimales exactos.
-5. **Planificador de Metas**: Define objetivos en dólares y descubre cuántos streams necesitas en cada mercado.
+## 🌟 Features
+- **Spotify Streaming Calculator**: Convierte reproducciones asimétricas en ingresos de master y publishing.
+- **Top 50 Countries Database**: Soporte para los mercados principales basados en datos recientes.
+- **Visualización de Datos**: Gráficos interactivos de distribución de ingresos usando Recharts.
+- **Modo Oscuro Permanente**: UX premium al estilo de plataformas musicales.
+- **PWA (Progressive Web App)**: Instalable como app nativa en iOS, Android y Escritorio con soporte offline.
+- **Responsive Design**: Interfaces adaptadas a móvil y escritorio.
+- **Data Persistence**: La calculadora recuerda los países seleccionados tras cerrar el navegador.
 
 ## 📦 Instalación y Uso Local
 
