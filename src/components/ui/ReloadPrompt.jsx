@@ -3,22 +3,21 @@ import { useRegisterSW } from 'virtual:pwa-register/react';
 import { X, RefreshCcw } from 'lucide-react';
 
 export default function ReloadPrompt() {
-    // Configured to use standard Vite PWA register behavior
     const {
         needRefresh: [needRefresh, setNeedRefresh],
         updateServiceWorker,
     } = useRegisterSW({
         onRegisteredSW(swUrl, r) {
-            console.log('SW Registered: ' + r);
+            console.log('[PWA] SW Registered:', r);
             if (r) {
-                // Check for updates every hour
+                // Check for updates every 10 minutes
                 setInterval(() => {
                     r.update();
-                }, 60 * 60 * 1000);
+                }, 10 * 60 * 1000);
             }
         },
         onRegisterError(error) {
-            console.log('SW registration error', error);
+            console.error('[PWA] SW registration error:', error);
         },
     });
 
@@ -32,16 +31,25 @@ export default function ReloadPrompt() {
             }
         };
 
-        window.addEventListener('focus', handleFocus);
-        document.addEventListener('visibilitychange', () => {
+        const handleVisibilityChange = () => {
             if (document.visibilityState === 'visible') handleFocus();
-        });
+        };
+
+        window.addEventListener('focus', handleFocus);
+        document.addEventListener('visibilitychange', handleVisibilityChange);
 
         return () => {
             window.removeEventListener('focus', handleFocus);
-            document.removeEventListener('visibilitychange', handleFocus);
+            document.removeEventListener('visibilitychange', handleVisibilityChange);
         };
     }, []);
+
+    // Debug: log when needRefresh state changes
+    useEffect(() => {
+        if (needRefresh) {
+            console.log('[PWA] New version detected — showing update prompt');
+        }
+    }, [needRefresh]);
 
     const close = () => {
         setNeedRefresh(false);
