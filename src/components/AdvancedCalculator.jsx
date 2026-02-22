@@ -1,15 +1,13 @@
 import React, { useState, useMemo } from 'react';
-import {
-    DollarSign,
-    BarChart3,
-    Globe,
-    Info,
-    TrendingUp,
-    Plus,
-    Trash2,
-    RefreshCcw,
-    Layers
-} from 'lucide-react';
+import DollarSign from 'lucide-react/dist/esm/icons/dollar-sign';
+import BarChart3 from 'lucide-react/dist/esm/icons/bar-chart-3';
+import Globe from 'lucide-react/dist/esm/icons/globe';
+import Info from 'lucide-react/dist/esm/icons/info';
+import TrendingUp from 'lucide-react/dist/esm/icons/trending-up';
+import Plus from 'lucide-react/dist/esm/icons/plus';
+import Trash2 from 'lucide-react/dist/esm/icons/trash-2';
+import RefreshCcw from 'lucide-react/dist/esm/icons/refresh-ccw';
+import Layers from 'lucide-react/dist/esm/icons/layers';
 import {
     PieChart,
     Pie,
@@ -45,9 +43,7 @@ const AdvancedCalculator = () => {
     const [isConfirmResetOpen, setIsConfirmResetOpen] = useState(false);
 
     // Determinar si hay datos para limpiar
-    const hasData = useMemo(() => {
-        return countryData.some(c => c.country || c.streams > 0);
-    }, [countryData]);
+    const hasData = countryData.some(c => c.country || c.streams > 0);
 
     const resetData = () => {
         setIsConfirmResetOpen(true);

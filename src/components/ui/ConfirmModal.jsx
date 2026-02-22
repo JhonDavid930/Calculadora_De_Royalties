@@ -1,5 +1,6 @@
 import React from 'react';
-import { AlertCircle, X } from 'lucide-react';
+import AlertCircle from 'lucide-react/dist/esm/icons/alert-circle';
+import X from 'lucide-react/dist/esm/icons/x';
 
 const ConfirmModal = ({ isOpen, onClose, onConfirm, title, message, confirmText = "Confirmar", cancelText = "Cancelar" }) => {
     if (!isOpen) return null;

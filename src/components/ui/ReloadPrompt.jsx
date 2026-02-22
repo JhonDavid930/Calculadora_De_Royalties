@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useRegisterSW } from 'virtual:pwa-register/react';
-import { X, RefreshCcw } from 'lucide-react';
+import X from 'lucide-react/dist/esm/icons/x';
+import RefreshCcw from 'lucide-react/dist/esm/icons/refresh-ccw';
 
 export default function ReloadPrompt() {
     // Local UI state — controls whether the user temporarily dismissed the prompt

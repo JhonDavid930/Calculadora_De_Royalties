@@ -37,22 +37,18 @@ export const useRoyaltyCalculations = () => {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(countryData));
     }, [countryData]);
 
-    const totalStreams = useMemo(() =>
-        countryData.reduce((acc, curr) => acc + curr.streams, 0),
-        [countryData]);
+    const totalStreams = countryData.reduce((acc, curr) => acc + curr.streams, 0);
 
-    const totalRevenue = useMemo(() =>
-        countryData.reduce((acc, curr) => {
-            const rowRevenue = currency(curr.streams).multiply(curr.rate);
-            return currency(acc).add(rowRevenue).value;
-        }, 0),
-        [countryData]);
+    const totalRevenue = countryData.reduce((acc, curr) => {
+        const rowRevenue = currency(curr.streams).multiply(curr.rate);
+        return currency(acc).add(rowRevenue).value;
+    }, 0);
 
-    const effectiveRPM = useMemo(() => {
+    const effectiveRPM = (() => {
         if (totalStreams === 0) return 0;
         // (Total Revenue / Total Streams) * 1000
         return currency(totalRevenue).divide(totalStreams).multiply(1000).value;
-    }, [totalRevenue, totalStreams]);
+    })();
 
     const chartData = useMemo(() => {
         const data = countryData

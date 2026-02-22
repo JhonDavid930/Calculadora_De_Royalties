@@ -1,10 +1,8 @@
 import React, { useState } from 'react';
-import {
-  Play,
-  Globe,
-  Target,
-  Music,
-} from 'lucide-react';
+import Play from 'lucide-react/dist/esm/icons/play';
+import Globe from 'lucide-react/dist/esm/icons/globe';
+import Target from 'lucide-react/dist/esm/icons/target';
+import Music from 'lucide-react/dist/esm/icons/music';
 import SimpleCalculator from './components/SimpleCalculator';
 import AdvancedCalculator from './components/AdvancedCalculator';
 import GoalCalculator from './components/GoalCalculator';

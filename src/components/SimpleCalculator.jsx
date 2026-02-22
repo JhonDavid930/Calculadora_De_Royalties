@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Users } from 'lucide-react';
+import Users from 'lucide-react/dist/esm/icons/users';
 import Card from './ui/Card';
 
 const SimpleCalculator = () => {
