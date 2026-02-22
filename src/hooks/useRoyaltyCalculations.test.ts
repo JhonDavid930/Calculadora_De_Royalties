@@ -1,21 +1,21 @@
-/* eslint-disable no-undef */
 import { renderHook, act } from '@testing-library/react';
 import { useRoyaltyCalculations } from './useRoyaltyCalculations';
+import { describe, it, expect, beforeEach } from 'vitest';
 
 // Mock localStorage
-const localStorageMock = (function () {
-    let store = {};
+const localStorageMock = (() => {
+    let store: Record<string, string> = {};
     return {
-        getItem(key) {
+        getItem(key: string): string | null {
             return store[key] || null;
         },
-        setItem(key, value) {
+        setItem(key: string, value: string): void {
             store[key] = value.toString();
         },
-        removeItem(key) {
+        removeItem(key: string): void {
             delete store[key];
         },
-        clear() {
+        clear(): void {
             store = {};
         },
     };

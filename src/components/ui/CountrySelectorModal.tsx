@@ -1,17 +1,17 @@
-import React, { useState, useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import X from 'lucide-react/dist/esm/icons/x';
 import Search from 'lucide-react/dist/esm/icons/search';
 import Check from 'lucide-react/dist/esm/icons/check';
 import Plus from 'lucide-react/dist/esm/icons/plus';
 import { COUNTRY_DB } from '../../constants/countries';
+import type { CountrySelectorModalProps } from '../../types';
 
-const CountrySelectorModal = ({ isOpen, onClose, onAddCountries, existingCountries }) => {
+const CountrySelectorModal = ({ isOpen, onClose, onAddCountries, existingCountries }: CountrySelectorModalProps) => {
     const [searchTerm, setSearchTerm] = useState('');
-    const [selectedCodes, setSelectedCodes] = useState([]);
+    const [selectedCodes, setSelectedCodes] = useState<string[]>([]);
 
     const availableCountries = useMemo(() => {
-        // Filter out countries already in the list
-        const existingCodes = new Set(existingCountries.map(c => c.country)); // Assuming 'country' stores the name, using name for now as ID logic seems name-based in main app
+        const existingCodes = new Set(existingCountries.map(c => c.country));
         return COUNTRY_DB.filter(c =>
             !existingCodes.has(c.name) &&
             c.name.toLowerCase().includes(searchTerm.toLowerCase())
@@ -20,20 +20,18 @@ const CountrySelectorModal = ({ isOpen, onClose, onAddCountries, existingCountri
 
     const isAllSelected = availableCountries.length > 0 && availableCountries.every(c => selectedCodes.includes(c.name));
 
-    const handleToggleAll = () => {
+    const handleToggleAll = (): void => {
         if (isAllSelected) {
-            // Deselect visible countries
             const visibleNames = new Set(availableCountries.map(c => c.name));
             setSelectedCodes(prev => prev.filter(name => !visibleNames.has(name)));
         } else {
-            // Select all visible countries
             const newSelected = new Set(selectedCodes);
             availableCountries.forEach(c => newSelected.add(c.name));
             setSelectedCodes(Array.from(newSelected));
         }
     };
 
-    const handleSelect = (countryName) => {
+    const handleSelect = (countryName: string): void => {
         setSelectedCodes(prev => {
             if (prev.includes(countryName)) {
                 return prev.filter(c => c !== countryName);
@@ -43,7 +41,7 @@ const CountrySelectorModal = ({ isOpen, onClose, onAddCountries, existingCountri
         });
     };
 
-    const handleAdd = () => {
+    const handleAdd = (): void => {
         onAddCountries(selectedCodes);
         setSelectedCodes([]);
         setSearchTerm('');

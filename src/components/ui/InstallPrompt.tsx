@@ -1,17 +1,22 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import Download from 'lucide-react/dist/esm/icons/download';
 import Share from 'lucide-react/dist/esm/icons/share';
 import PlusSquare from 'lucide-react/dist/esm/icons/plus-square';
 
+interface BeforeInstallPromptEvent extends Event {
+    prompt: () => Promise<void>;
+    userChoice: Promise<{ outcome: 'accepted' | 'dismissed' }>;
+}
+
 export default function InstallPrompt() {
-    const [deferredPrompt, setDeferredPrompt] = useState(null);
+    const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null);
     const [isIOS, setIsIOS] = useState(false);
     const [isStandalone, setIsStandalone] = useState(false);
     const [showIOSPrompt, setShowIOSPrompt] = useState(false);
 
     useEffect(() => {
         // Check if already installed
-        if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true) {
+        if (window.matchMedia('(display-mode: standalone)').matches || (window.navigator as Navigator & { standalone?: boolean }).standalone === true) {
             setIsStandalone(true);
             return;
         }
@@ -22,9 +27,9 @@ export default function InstallPrompt() {
         setIsIOS(isIOSDevice);
 
         // Listen for Android install prompt
-        const handleBeforeInstallPrompt = (e) => {
+        const handleBeforeInstallPrompt = (e: Event) => {
             e.preventDefault();
-            setDeferredPrompt(e);
+            setDeferredPrompt(e as BeforeInstallPromptEvent);
         };
 
         window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
@@ -34,7 +39,7 @@ export default function InstallPrompt() {
         };
     }, []);
 
-    const handleInstallClick = async () => {
+    const handleInstallClick = async (): Promise<void> => {
         if (isIOS) {
             setShowIOSPrompt(true);
             return;

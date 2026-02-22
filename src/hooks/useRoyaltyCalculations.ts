@@ -1,26 +1,25 @@
 import { useState, useMemo, useEffect } from 'react';
 import currency from 'currency.js';
-import { z } from 'zod';
 import { COUNTRY_DB } from '../constants/countries';
+import type { CountryData, ChartDataPoint, UseRoyaltyCalculationsReturn } from '../types';
 
 const STORAGE_KEY = 'royalty_pro_advanced_data';
 
-// Schema para validación de datos de país
-const CountryDataSchema = z.object({
-    id: z.number(),
-    country: z.string(),
-    streams: z.number().min(0, { message: "Streams cannot be negative" }),
-    rate: z.number().min(0),
-    tier: z.number().nullable(),
+const createEmptyRow = (): CountryData => ({
+    id: Date.now(),
+    country: '',
+    streams: 0,
+    rate: 0,
+    tier: null,
 });
 
-export const useRoyaltyCalculations = () => {
+export const useRoyaltyCalculations = (): UseRoyaltyCalculationsReturn => {
     // Inicialización inteligente desde localStorage
-    const [countryData, setCountryData] = useState(() => {
+    const [countryData, setCountryData] = useState<CountryData[]>(() => {
         try {
             const saved = localStorage.getItem(STORAGE_KEY);
             if (saved) {
-                const parsed = JSON.parse(saved);
+                const parsed = JSON.parse(saved) as CountryData[];
                 // Validamos que el formato sea correcto (Array y tenga al menos un elemento)
                 if (Array.isArray(parsed) && parsed.length > 0) {
                     return parsed;
@@ -29,7 +28,7 @@ export const useRoyaltyCalculations = () => {
         } catch (e) {
             console.error("Error loading from localStorage", e);
         }
-        return [{ id: 1, country: '', streams: 0, rate: 0, tier: null }];
+        return [createEmptyRow()];
     });
 
     // Guardar automáticamente cuando cambien los datos
@@ -37,20 +36,19 @@ export const useRoyaltyCalculations = () => {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(countryData));
     }, [countryData]);
 
-    const totalStreams = countryData.reduce((acc, curr) => acc + curr.streams, 0);
+    const totalStreams: number = countryData.reduce((acc, curr) => acc + curr.streams, 0);
 
-    const totalRevenue = countryData.reduce((acc, curr) => {
+    const totalRevenue: number = countryData.reduce((acc, curr) => {
         const rowRevenue = currency(curr.streams).multiply(curr.rate);
         return currency(acc).add(rowRevenue).value;
     }, 0);
 
-    const effectiveRPM = (() => {
+    const effectiveRPM: number = (() => {
         if (totalStreams === 0) return 0;
-        // (Total Revenue / Total Streams) * 1000
         return currency(totalRevenue).divide(totalStreams).multiply(1000).value;
     })();
 
-    const chartData = useMemo(() => {
+    const chartData = useMemo((): ChartDataPoint[] => {
         const data = countryData
             .filter(item => item.country && item.streams > 0)
             .map(item => ({
@@ -62,9 +60,8 @@ export const useRoyaltyCalculations = () => {
         return data.length > 0 ? data : [{ name: 'Sin datos', value: 1 }];
     }, [countryData]);
 
-    const updateCountryStream = (id, newVal) => {
+    const updateCountryStream = (id: number, newVal: string): void => {
         const val = Number(newVal);
-        // Validación rápida antes de actualizar el estado
         if (isNaN(val)) return;
 
         setCountryData(prev => prev.map(c =>
@@ -72,7 +69,7 @@ export const useRoyaltyCalculations = () => {
         ));
     };
 
-    const updateCountryRate = (id, newRate) => {
+    const updateCountryRate = (id: number, newRate: string): void => {
         const val = Number(newRate);
         if (isNaN(val)) return;
 
@@ -81,7 +78,7 @@ export const useRoyaltyCalculations = () => {
         ));
     };
 
-    const selectCountry = (id, countryName) => {
+    const selectCountry = (id: number, countryName: string): void => {
         const dbCountry = COUNTRY_DB.find(c => c.name === countryName);
 
         setCountryData(prev => prev.map(c => {
@@ -97,8 +94,8 @@ export const useRoyaltyCalculations = () => {
         }));
     };
 
-    const handleAddCountries = (countryNames) => {
-        const newCountries = countryNames.map((name, index) => {
+    const handleAddCountries = (countryNames: string[]): void => {
+        const newCountries: CountryData[] = countryNames.map((name, index) => {
             const dbCountry = COUNTRY_DB.find(c => c.name === name);
             const newId = Date.now() + index;
             return {
@@ -118,22 +115,21 @@ export const useRoyaltyCalculations = () => {
         });
     };
 
-    const addEmptyRow = () => {
-        const newId = Date.now();
-        setCountryData([...countryData, { id: newId, country: '', streams: 0, rate: 0, tier: null }]);
+    const addEmptyRow = (): void => {
+        setCountryData(prev => [...prev, createEmptyRow()]);
     };
 
-    const removeCountry = (id) => {
+    const removeCountry = (id: number): void => {
         if (countryData.length > 1) {
             setCountryData(countryData.filter(c => c.id !== id));
         } else {
-            setCountryData([{ id: Date.now(), country: '', streams: 0, rate: 0, tier: null }]);
+            setCountryData([createEmptyRow()]);
         }
     };
 
-    const resetData = () => {
+    const resetData = (): void => {
         localStorage.removeItem(STORAGE_KEY);
-        setCountryData([{ id: Date.now(), country: '', streams: 0, rate: 0, tier: null }]);
+        setCountryData([createEmptyRow()]);
     };
 
     return {
@@ -149,7 +145,5 @@ export const useRoyaltyCalculations = () => {
         addEmptyRow,
         removeCountry,
         resetData,
-        // Exportamos el schema por si se necesita en el componente para validación visual
-        CountryDataSchema
     };
 };
