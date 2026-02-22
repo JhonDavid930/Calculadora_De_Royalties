@@ -34,7 +34,9 @@ npm run test:e2e
 
 Este proyecto utiliza tecnologías de vanguardia para garantizar precisión financiera y una experiencia de usuario fluida.
 
-- **Frontend**: [React.js](https://reactjs.org/) con Custom Hooks para gestión de estado complejo.
+- **Frontend**: [React.js](https://reactjs.org/) + **TypeScript** (strict mode) con Custom Hooks para gestión de estado complejo.
+- **Tipado**: TypeScript estricto — 17 componentes/hooks tipados, 0 errores en compilador (`tsc --noEmit`).
+- **Testing**: 57 unit tests (Vitest + React Testing Library) + E2E (Playwright). 100% green.
 - **Precisión Financiera**: [currency.js](https://currency.js.org/) para evitar errores aritméticos de coma flotante en cálculos monetarios.
 - **Validación de Datos**: [Zod](https://zod.dev/) para asegurar la integridad de los datos de entrada.
 - **Persistencia**: `localStorage` para autoguardado de progreso entre sesiones y cambios de vista.
@@ -48,7 +50,9 @@ Este proyecto utiliza tecnologías de vanguardia para garantizar precisión fina
 - **Visualización de Datos**: Gráficos interactivos de distribución de ingresos usando Recharts.
 - **Modo Oscuro Permanente**: UX premium al estilo de plataformas musicales.
 - **PWA (Progressive Web App)**: Instalable como app nativa en iOS, Android y Escritorio con soporte offline.
-- **Responsive Design**: Interfaces adaptadas a móvil y escritorio.
+- **Responsive Design**: Interfaces adaptadas a móvil, tablet y escritorio (grid responsivo auditado).
+- **Accesibilidad (A11y)**: Navegación completa por teclado con focus rings visibles.
+- **Micro-Interacciones**: Feedback táctil en hover para una experiencia premium.
 - **Data Persistence**: La calculadora recuerda los países seleccionados tras cerrar el navegador.
 
 ## 📦 Instalación y Uso Local

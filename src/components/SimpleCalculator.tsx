@@ -1,12 +1,25 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import Users from 'lucide-react/dist/esm/icons/users';
 import Card from './ui/Card';
 
 const SimpleCalculator = () => {
-    const [simpleStreams, setSimpleStreams] = useState(100000);
+    const [simpleStreams, setSimpleStreams] = useState('100000');
     const [simpleRate, setSimpleRate] = useState(0.003);
 
-    const formatCurrency = (val) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(val);
+    const handleStreamsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const raw = e.target.value;
+        // Eliminar ceros iniciales: "06767" → "6767", "" se queda vacío
+        const cleaned = raw === '' ? '' : String(Number(raw));
+        setSimpleStreams(cleaned);
+    };
+
+    const streamsNumber = Number(simpleStreams) || 0;
+
+    const formatCurrency = (val: number): string => {
+        if (Math.abs(val) >= 1_000_000_000) return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', notation: 'compact', maximumFractionDigits: 2 }).format(val);
+        if (Math.abs(val) >= 1_000_000) return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', notation: 'compact', maximumFractionDigits: 2 }).format(val);
+        return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(val);
+    };
 
     return (
         <div className="max-w-2xl mx-auto space-y-6 animate-fadeIn">
@@ -23,8 +36,8 @@ const SimpleCalculator = () => {
                             <input
                                 type="number"
                                 value={simpleStreams}
-                                onChange={(e) => setSimpleStreams(Number(e.target.value))}
-                                className="w-full bg-dark-border border border-dark-hover rounded-md p-4 text-2xl font-bold text-text-primary focus:outline-none focus:border-spotify-green transition-colors font-mono"
+                                onChange={handleStreamsChange}
+                                className="w-full bg-dark-border border border-dark-hover rounded-md p-4 pr-14 text-2xl font-bold text-text-primary focus:outline-none focus:border-spotify-green focus:ring-2 focus:ring-spotify-green/50 transition-colors duration-200 font-mono"
                             />
                             <Users className="absolute right-4 top-1/2 transform -translate-y-1/2 text-text-muted" />
                         </div>
@@ -42,7 +55,7 @@ const SimpleCalculator = () => {
                             step="0.0001"
                             value={simpleRate}
                             onChange={(e) => setSimpleRate(Number(e.target.value))}
-                            className="w-full h-2 bg-dark-border rounded-lg appearance-none cursor-pointer accent-spotify-green"
+                            className="w-full h-2 bg-dark-border rounded-lg appearance-none cursor-pointer accent-spotify-green hover:bg-dark-hover transition-colors duration-200"
                         />
                         <div className="flex justify-between text-xs text-text-muted mt-2">
                             <span>$0.001 (Bajo)</span>
@@ -51,9 +64,9 @@ const SimpleCalculator = () => {
                         </div>
                     </div>
 
-                    <div className="pt-6 border-t border-dark-border text-center">
+                    <div className="pt-6 border-t border-dark-border text-center overflow-hidden">
                         <p className="text-text-secondary text-sm uppercase tracking-wider mb-1">Ingreso Estimado</p>
-                        <h1 className="text-5xl font-bold text-text-primary">{formatCurrency(simpleStreams * simpleRate)}</h1>
+                        <h1 className="text-3xl md:text-5xl font-bold text-text-primary truncate">{formatCurrency(streamsNumber * simpleRate)}</h1>
                     </div>
                 </div>
             </Card>

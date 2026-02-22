@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import { useState } from 'react';
 import DollarSign from 'lucide-react/dist/esm/icons/dollar-sign';
 import BarChart3 from 'lucide-react/dist/esm/icons/bar-chart-3';
 import Globe from 'lucide-react/dist/esm/icons/globe';
@@ -45,16 +45,18 @@ const AdvancedCalculator = () => {
     // Determinar si hay datos para limpiar
     const hasData = countryData.some(c => c.country || c.streams > 0);
 
-    const resetData = () => {
+    const resetData = (): void => {
         setIsConfirmResetOpen(true);
     }
 
-    const formatCurrency = (val) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(val);
-    const formatNumber = (val) => new Intl.NumberFormat('en-US').format(val);
-
-    // Logic to split the view - REMOVED for unified scrolling list
-    // const primaryCountries = countryData.slice(0, 5);
-    // const secondaryCountries = countryData.slice(5);
+    const formatCurrency = (val: number): string => {
+        if (Math.abs(val) >= 1_000_000) return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', notation: 'compact', maximumFractionDigits: 2 }).format(val);
+        return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(val);
+    };
+    const formatNumber = (val: number): string => {
+        if (Math.abs(val) >= 1_000_000_000) return new Intl.NumberFormat('en-US', { notation: 'compact', maximumFractionDigits: 1 }).format(val);
+        return new Intl.NumberFormat('en-US').format(val);
+    };
 
     return (
         <div className="space-y-6 animate-fadeIn">
@@ -89,10 +91,10 @@ const AdvancedCalculator = () => {
                                 Desglose por País
                             </h2>
                             <div className="flex gap-2">
-                                <button onClick={resetData} className="text-xs text-text-secondary hover:text-text-primary flex items-center gap-1 bg-dark-border px-3 py-2 rounded hover:bg-dark-hover transition-colors">
+                                <button onClick={resetData} className="text-xs text-text-secondary flex items-center gap-1 bg-dark-border px-3 py-2 rounded transition-all duration-200 cursor-pointer hover:bg-dark-hover hover:text-text-primary hover:-translate-y-0.5">
                                     <RefreshCcw className="w-3 h-3" /> Limpiar
                                 </button>
-                                <button onClick={() => setIsModalOpen(true)} className="text-xs text-black font-bold flex items-center gap-1 bg-spotify-green px-3 py-2 rounded hover:bg-spotify-light transition-colors shadow-lg shadow-green-900/20">
+                                <button onClick={() => setIsModalOpen(true)} className="text-xs text-black font-bold flex items-center gap-1 bg-spotify-green px-3 py-2 rounded shadow-lg shadow-green-900/20 transition-all duration-200 cursor-pointer hover:bg-spotify-light hover:shadow-green-900/40 hover:-translate-y-0.5">
                                     <Layers className="w-3 h-3" /> Selector Masivo
                                 </button>
                             </div>
@@ -103,8 +105,8 @@ const AdvancedCalculator = () => {
                             <div className="hidden md:grid md:grid-cols-12 md:gap-4 border-b border-dark-border pb-2 text-text-secondary text-sm font-medium px-4">
                                 <div className="md:col-span-4 pl-2">País</div>
                                 <div className="md:col-span-3 text-right">Streams</div>
-                                <div className="md:col-span-3 text-right">Rate ($)</div>
-                                <div className="md:col-span-2 text-right">Total</div>
+                                <div className="md:col-span-2 text-right">Rate ($)</div>
+                                <div className="md:col-span-3 text-right">Total</div>
                             </div>
 
                             {/* Filas de Datos (Unified List) */}
@@ -112,7 +114,7 @@ const AdvancedCalculator = () => {
                                 {countryData.map((item) => (
                                     <div
                                         key={item.id}
-                                        className="group bg-dark-bg md:bg-transparent p-4 md:p-0 rounded-lg md:rounded-none border border-dark-border md:border-0 md:border-b md:border-dark-border md:hover:bg-dark-hover transition-colors grid grid-cols-1 md:grid-cols-12 gap-4 items-center relative"
+                                        className="group bg-dark-bg md:bg-transparent p-4 md:p-0 rounded-lg md:rounded-none border border-dark-border md:border-0 md:border-b md:border-dark-border transition-colors duration-200 hover:bg-dark-hover/50 md:hover:bg-white/5 grid grid-cols-1 md:grid-cols-12 gap-4 items-center relative"
                                     >
 
                                         {/* Selector de País */}
@@ -148,7 +150,7 @@ const AdvancedCalculator = () => {
                                             <label className="block md:hidden text-xs text-text-secondary mb-1">Streams</label>
                                             <input
                                                 type="number"
-                                                className="bg-transparent border-b border-dark-hover focus:border-spotify-green text-right w-full p-2 md:p-1.5 outline-none text-text-primary font-mono placeholder-dark-hover text-base transition-colors"
+                                                className="bg-transparent border-b border-dark-hover focus:border-spotify-green text-right w-full p-2 md:p-1.5 outline-none text-text-primary font-mono placeholder-dark-hover text-base transition-all duration-200 focus:ring-opacity-50"
                                                 value={item.streams || ''}
                                                 placeholder="0"
                                                 disabled={!item.country}
@@ -157,12 +159,12 @@ const AdvancedCalculator = () => {
                                         </div>
 
                                         {/* Input Rate */}
-                                        <div className="col-span-6 md:col-span-3">
+                                        <div className="col-span-6 md:col-span-2">
                                             <label className="block md:hidden text-xs text-text-secondary mb-1">Rate ($)</label>
                                             <input
                                                 type="number"
                                                 step="0.0001"
-                                                className="bg-transparent text-right w-full p-2 md:p-1.5 outline-none text-text-secondary focus:text-text-primary font-mono text-xs md:text-xs"
+                                                className="bg-transparent border-b border-transparent focus:border-spotify-green text-right w-full p-2 md:p-1.5 outline-none text-text-secondary focus:text-text-primary font-mono text-xs md:text-xs transition-colors duration-200"
                                                 value={item.rate || ''}
                                                 disabled={!item.country}
                                                 onChange={(e) => updateCountryRate(item.id, e.target.value)}
@@ -170,9 +172,9 @@ const AdvancedCalculator = () => {
                                         </div>
 
                                         {/* Total Calculado */}
-                                        <div className="col-span-12 md:col-span-2 flex justify-between md:block items-center border-t border-dark-border md:border-0 pt-2 md:pt-0 mt-2 md:mt-0">
+                                        <div className="col-span-12 md:col-span-3 flex justify-between md:block items-center border-t border-dark-border md:border-0 pt-2 md:pt-0 mt-2 md:mt-0">
                                             <span className="block md:hidden text-xs text-text-secondary">Total Estimado</span>
-                                            <div className="text-right font-mono text-spotify-green font-bold bg-dark-surface md:bg-transparent px-2 rounded">
+                                            <div className="text-right font-mono text-spotify-green font-bold bg-dark-surface md:bg-transparent px-2 rounded truncate">
                                                 {formatCurrency(item.streams * item.rate)}
                                             </div>
                                         </div>
@@ -191,7 +193,7 @@ const AdvancedCalculator = () => {
                         </div>
 
                         {/* Botón Simple para agregar fila manualmente */}
-                        <button onClick={addEmptyRow} className="w-full mt-4 py-3 md:py-2 border border-dashed border-dark-hover rounded text-text-muted hover:text-spotify-green hover:border-spotify-green text-sm transition-all flex items-center justify-center gap-2">
+                        <button onClick={addEmptyRow} className="w-full mt-4 py-3 md:py-2 border border-dashed border-dark-hover rounded text-text-muted hover:text-spotify-green hover:border-spotify-green hover:bg-spotify-green/5 text-sm transition-all duration-200 cursor-pointer flex items-center justify-center gap-2">
                             <Plus className="w-4 h-4" /> Agregar fila vacía
                         </button>
 
@@ -234,7 +236,7 @@ const AdvancedCalculator = () => {
                                         <RechartsTooltip
                                             contentStyle={{ backgroundColor: '#181818', borderColor: '#282828', borderRadius: '8px' }}
                                             itemStyle={{ color: '#fff' }}
-                                            formatter={(value) => formatCurrency(value)}
+                                            formatter={(value: number) => formatCurrency(value)}
                                         />
                                     )}
                                 </PieChart>
@@ -293,4 +295,3 @@ const AdvancedCalculator = () => {
 };
 
 export default AdvancedCalculator;
-

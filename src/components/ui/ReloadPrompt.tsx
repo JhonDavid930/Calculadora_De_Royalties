@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useRegisterSW } from 'virtual:pwa-register/react';
 import X from 'lucide-react/dist/esm/icons/x';
 import RefreshCcw from 'lucide-react/dist/esm/icons/refresh-ccw';
@@ -11,7 +11,7 @@ export default function ReloadPrompt() {
         needRefresh: [needRefresh],
         updateServiceWorker,
     } = useRegisterSW({
-        onRegisteredSW(swUrl, r) {
+        onRegisteredSW(_swUrl: string, r?: ServiceWorkerRegistration) {
             console.log('[PWA] SW Registered:', r);
             if (r) {
                 // Check for updates every 10 minutes
@@ -20,7 +20,7 @@ export default function ReloadPrompt() {
                 }, 10 * 60 * 1000);
             }
         },
-        onRegisterError(error) {
+        onRegisterError(error: Error) {
             console.error('[PWA] SW registration error:', error);
         },
     });
@@ -64,7 +64,7 @@ export default function ReloadPrompt() {
     }, [needRefresh]);
 
     // User temporarily dismisses — prompt will reappear on next app focus
-    const dismiss = () => {
+    const dismiss = (): void => {
         setDismissed(true);
     };
 

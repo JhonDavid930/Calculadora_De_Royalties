@@ -1,12 +1,27 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import Target from 'lucide-react/dist/esm/icons/target';
 import Info from 'lucide-react/dist/esm/icons/info';
+
+interface AudienceOption {
+    label: string;
+    val: number;
+    desc: string;
+}
 
 const GoalCalculator = () => {
     const [goalAmount, setGoalAmount] = useState('1000');
     const [goalAvgRate, setGoalAvgRate] = useState(0.0025);
 
-    const formatNumber = (val) => new Intl.NumberFormat('en-US').format(val);
+    const formatNumber = (val: number): string => {
+        if (Math.abs(val) >= 1_000_000_000) return new Intl.NumberFormat('en-US', { notation: 'compact', maximumFractionDigits: 1 }).format(val);
+        return new Intl.NumberFormat('en-US').format(val);
+    };
+
+    const audienceOptions: AudienceOption[] = [
+        { label: 'Tier 1 (US/UK/EU)', val: 0.0040, desc: 'Mayoría audiencia anglosajona' },
+        { label: 'Tier 3 (LatAm/Mix)', val: 0.0025, desc: 'Mix España, México, Chile' },
+        { label: 'Tier 5 (Viral/Free)', val: 0.0012, desc: 'Alta proporción cuentas gratis' }
+    ];
 
     return (
         <div className="max-w-4xl mx-auto animate-fadeIn">
@@ -26,7 +41,7 @@ const GoalCalculator = () => {
                                     type="number"
                                     value={goalAmount}
                                     onChange={(e) => setGoalAmount(e.target.value)}
-                                    className="w-full bg-dark-surface border border-dark-hover rounded-md py-4 pl-10 pr-4 text-2xl font-bold text-text-primary focus:outline-none focus:border-spotify-green"
+                                    className="w-full bg-dark-surface border border-dark-hover hover:border-text-muted rounded-md py-4 pl-10 pr-4 text-2xl font-bold text-text-primary focus:outline-none focus:border-spotify-green focus:ring-2 focus:ring-spotify-green/50 transition-colors duration-200"
                                 />
                             </div>
                         </div>
@@ -34,17 +49,13 @@ const GoalCalculator = () => {
                         <div>
                             <label className="block text-sm font-medium text-text-primary mb-2">Tu Perfil de Audiencia (RPM)</label>
                             <div className="grid grid-cols-1 gap-2">
-                                {[
-                                    { label: 'Tier 1 (US/UK/EU)', val: 0.0040, desc: 'Mayoría audiencia anglosajona' },
-                                    { label: 'Tier 3 (LatAm/Mix)', val: 0.0025, desc: 'Mix España, México, Chile' },
-                                    { label: 'Tier 5 (Viral/Free)', val: 0.0012, desc: 'Alta proporción cuentas gratis' }
-                                ].map((option) => (
+                                {audienceOptions.map((option) => (
                                     <button
                                         key={option.val}
                                         onClick={() => setGoalAvgRate(option.val)}
-                                        className={`p-3 rounded-md text-left border transition-all ${goalAvgRate === option.val
-                                            ? 'bg-spotify-green/10 border-spotify-green'
-                                            : 'bg-dark-surface border-dark-border hover:border-text-muted'
+                                        className={`p-3 rounded-md text-left border cursor-pointer transition-all duration-200 hover:-translate-y-0.5 ${goalAvgRate === option.val
+                                            ? 'bg-spotify-green/10 border-spotify-green ring-1 ring-spotify-green/50'
+                                            : 'bg-dark-surface border-dark-border hover:border-text-muted hover:bg-dark-hover'
                                             }`}
                                     >
                                         <div className="flex justify-between items-center">
@@ -64,7 +75,7 @@ const GoalCalculator = () => {
 
                     <Target className="w-16 h-16 text-spotify-green mb-4 opacity-80" />
                     <h3 className="text-text-secondary text-lg mb-2">Necesitas generar</h3>
-                    <div className="text-4xl md:text-5xl font-bold text-text-primary mb-2 font-mono tracking-tight">
+                    <div className="text-3xl md:text-4xl lg:text-5xl font-bold text-text-primary mb-2 font-mono tracking-tight break-all">
                         {formatNumber(Math.ceil((Number(goalAmount) || 0) / goalAvgRate))}
                     </div>
                     <p className="text-text-muted text-sm uppercase tracking-widest font-bold">Streams Mensuales</p>

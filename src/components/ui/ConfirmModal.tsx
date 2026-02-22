@@ -1,8 +1,8 @@
-import React from 'react';
 import AlertCircle from 'lucide-react/dist/esm/icons/alert-circle';
 import X from 'lucide-react/dist/esm/icons/x';
+import type { ConfirmModalProps } from '../../types';
 
-const ConfirmModal = ({ isOpen, onClose, onConfirm, title, message, confirmText = "Confirmar", cancelText = "Cancelar" }) => {
+const ConfirmModal = ({ isOpen, onClose, onConfirm, title, message, confirmText = "Confirmar", cancelText = "Cancelar" }: ConfirmModalProps) => {
     if (!isOpen) return null;
 
     return (

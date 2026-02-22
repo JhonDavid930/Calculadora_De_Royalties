@@ -38,7 +38,7 @@ export default defineConfig({
   test: {
     globals: true,
     environment: 'jsdom',
-    setupFiles: './src/setupTests.js',
+    setupFiles: './src/setupTests.ts',
     exclude: ['node_modules', 'dist', '.idea', '.git', '.cache', 'e2e/*', 'tests/*'],
   },
   build: {
