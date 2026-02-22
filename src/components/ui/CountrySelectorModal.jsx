@@ -1,5 +1,8 @@
 import React, { useState, useMemo } from 'react';
-import { X, Search, Check, Plus } from 'lucide-react';
+import X from 'lucide-react/dist/esm/icons/x';
+import Search from 'lucide-react/dist/esm/icons/search';
+import Check from 'lucide-react/dist/esm/icons/check';
+import Plus from 'lucide-react/dist/esm/icons/plus';
 import { COUNTRY_DB } from '../../constants/countries';
 
 const CountrySelectorModal = ({ isOpen, onClose, onAddCountries, existingCountries }) => {
@@ -15,9 +18,7 @@ const CountrySelectorModal = ({ isOpen, onClose, onAddCountries, existingCountri
         );
     }, [searchTerm, existingCountries]);
 
-    const isAllSelected = useMemo(() => {
-        return availableCountries.length > 0 && availableCountries.every(c => selectedCodes.includes(c.name));
-    }, [availableCountries, selectedCodes]);
+    const isAllSelected = availableCountries.length > 0 && availableCountries.every(c => selectedCodes.includes(c.name));
 
     const handleToggleAll = () => {
         if (isAllSelected) {

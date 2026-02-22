@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Download, Share, PlusSquare } from 'lucide-react';
+import Download from 'lucide-react/dist/esm/icons/download';
+import Share from 'lucide-react/dist/esm/icons/share';
+import PlusSquare from 'lucide-react/dist/esm/icons/plus-square';
 
 export default function InstallPrompt() {
     const [deferredPrompt, setDeferredPrompt] = useState(null);

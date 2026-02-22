@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Target, Info } from 'lucide-react';
+import Target from 'lucide-react/dist/esm/icons/target';
+import Info from 'lucide-react/dist/esm/icons/info';
 
 const GoalCalculator = () => {
     const [goalAmount, setGoalAmount] = useState('1000');
@@ -42,8 +43,8 @@ const GoalCalculator = () => {
                                         key={option.val}
                                         onClick={() => setGoalAvgRate(option.val)}
                                         className={`p-3 rounded-md text-left border transition-all ${goalAvgRate === option.val
-                                                ? 'bg-spotify-green/10 border-spotify-green'
-                                                : 'bg-dark-surface border-dark-border hover:border-text-muted'
+                                            ? 'bg-spotify-green/10 border-spotify-green'
+                                            : 'bg-dark-surface border-dark-border hover:border-text-muted'
                                             }`}
                                     >
                                         <div className="flex justify-between items-center">
