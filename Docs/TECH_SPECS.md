@@ -5,43 +5,49 @@ Este proyecto utiliza una arquitectura moderna y reactiva, optimizada para rendi
 
 ### Core
 - **Framework:** React 18 (Crea interfaces de usuario dinámicas).
-- **Build Tool:** Vite (Empaquetador ultrarrápido). Configuradocon **Chunk Splitting** para optimizar la carga (Vendor, Charts, Icons separados).
-- **Lenguaje:** JavaScript (ES6+).
+- **Build Tool:** Vite (Empaquetador ultrarrápido). Configurado con **Chunk Splitting** para optimizar la carga (Vendor, Charts, Icons separados).
+- **Lenguaje:** **TypeScript (Strict Mode)**. Incluye **Branded Types** (`USD`, `PayRate`, `Streams`) para garantizar integridad matemática y prevenir errores en tiempo de compilación.
+- **Validación:** **Zod** para parseo seguro e inferencia de tipos de entradas de configuración.
 
-### Estilos & UI
-- **Tailwind CSS:** Framework de utilidades para diseño rápido y responsivo.
+### Estilos, UI & Animaciones
+- **Tailwind CSS:** Framework de utilidades para diseño rápido, responsivo y "Dark Mode" nativo.
+- **Framer Motion (v12+):** Motor de animaciones espaciales a 60fps. Implementa *Spring Physics*, transiciones de layout (`layoutId`), listados dinámicos (`AnimatePresence`) e interpolación numérica (`useSpring` + `useMotionValue`).
 - **Lucide React:** Iconografía vectorial ligera y moderna.
 - **Recharts:** Librería de gráficos para visualización de datos (Pie Charts).
-- **CSS Modules:** Usados puntualmente para animaciones específicas (`index.css`).
 
 ### Gestión de Estado
 - **React Hooks:** `useState`, `useEffect`, `useMemo` para lógica local y `Custom Hooks` (`useRoyaltyCalculations`) para lógica de negocio reutilizable.
 - **Persistencia:** `localStorage` para guardar datos del usuario entre sesiones.
 
 ### Calidad & Testing (QA Squad)
-- **Vitest:** Runner de pruebas unitarias (compatible con Vite).
-- **React Testing Library:** Pruebas de integración de componentes y DOM.
-- **jsdom:** Entorno de navegador simulado para tests.
+- **Vitest & React Testing Library:** Suite de pruebas unitarias y de integración (77+ tests con cobertura total del hook de cálculos y renderización de modales). Se incluye mock síncrono de Framer Motion.
+- **Playwright:** Suite de pruebas End-to-End (E2E) cross-browser comprobando el flujo crítico del calculador.
+- **ESLint v9:** Configuración tipo 'Flat' estricta con reglas de tipado y linting especializado para React Hooks.
 
 ---
 
 ## 2. Arquitectura de Carpetas
 ```
-src/
-├── components/       # Bloques de construcción de la UI
-│   ├── ui/           # Átomos reutilizables (Botones, Modales, Tarjetas)
-│   └── AdvancedCalculator.jsx  # Organismo principal de la app
-├── constants/        # Datos estáticos (Base de datos de países, colores)
-├── hooks/            # Lógica de negocio pura (Separada de la vista)
-├── utils/            # Funciones auxiliares (Formato de moneda, fechas)
-└── App.jsx           # Punto de entrada y Routing
+.
+├── Docs/             # Documentación viva (CHANGELOG, TODO, TECH_SPECS)
+├── e2e/              # Tests End-to-End (Playwright)
+├── src/
+│   ├── __mocks__/    # Mocks para tests (ej. virtual-pwa.ts)
+│   ├── components/   # Organismos (Calculadoras) y features
+│   │   └── ui/       # Átomos y Moléculas (Botones, Modales, StatBoxes)
+│   ├── constants/    # DB de países y constantes del sistema
+│   ├── hooks/        # Lógica de negocio (useRoyaltyCalculations)
+│   ├── types/        # TypeScript Definitions y Branded Types (Zod)
+│   ├── utils/        # Funciones auxiliares de formateo numérico
+│   ├── App.tsx       # Root Component y enrutador virtual animado
+│   └── setupTests.ts # Configuración de jsdom y Mocks Globales
 ```
 
 ## 3. Flujo de Datos
-1.  **Entrada:** El usuario ingresa Streams y selecciona un País.
-2.  **Procesamiento:** `useRoyaltyCalculations` detecta el cambio, busca el `Rate` del país en `constants/countries.js` y calcula `Streams * Rate`.
-3.  **Salida:** Se actualiza el estado global, recalculando totales y gráficos en tiempo real.
-4.  **Persistencia:** Cada cambio se guarda automáticamente en `localStorage`.
+1.  **Entrada Tipada:** El usuario ingresa Streams o Rates. Las entradas pasan a través del Custom Hook.
+2.  **Validación y Proceso:** `useRoyaltyCalculations` asegura la integridad mediante validaciones estrictas y calcula los totales exactos usando `currency.js` (evitando derivas de coma flotante).
+3.  **Transición Reactiva:** Framer Motion intercepta los cambios de estado (vía `useMotionValue`) e interpola *visualmente* el crecimiento de los números o la entrada de los componentes al DOM sin forzar re-renders masivos de React.
+4.  **Persistencia:** La selección es respaldada en `localStorage` tras cada hidratación.
 
 ## 4. Protocolos de Seguridad y Calidad
 - **Zero Trust:** No se confía en inputs del usuario (validaciones básicas en UI).
