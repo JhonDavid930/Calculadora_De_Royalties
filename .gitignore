@@ -37,4 +37,8 @@ dist-ssr
 
 # Internal agent tools
 .agent/
+.gemini/
 design-system/
+
+# Supabase local temp
+supabase/.temp/

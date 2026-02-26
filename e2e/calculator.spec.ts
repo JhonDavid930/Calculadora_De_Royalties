@@ -27,7 +27,7 @@ test.describe('RoyaltyPro Core Calculations', () => {
         // The calculation happens automatically
 
         // Validate USA rate is $0.0040 -> $4,000.00
-        const totalValue = await page.getByText('$4,000.00').first();
+        const totalValue = page.getByText('$4,000.00').first();
         await expect(totalValue).toBeVisible();
     });
 
