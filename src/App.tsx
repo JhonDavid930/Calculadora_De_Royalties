@@ -9,6 +9,8 @@ import AdvancedCalculator from './components/AdvancedCalculator';
 import GoalCalculator from './components/GoalCalculator';
 import ReloadPrompt from './components/ui/ReloadPrompt';
 import InstallPrompt from './components/ui/InstallPrompt';
+import { useOnboarding } from './hooks/useOnboarding';
+import HelpCircle from 'lucide-react/dist/esm/icons/help-circle';
 import type { LucideIcon } from 'lucide-react';
 
 interface TabConfig {
@@ -32,6 +34,7 @@ const pageTransition = {
 
 export default function App() {
     const [activeTab, setActiveTab] = useState('advanced');
+    const { startTour } = useOnboarding();
 
     const renderContent = () => {
         switch (activeTab) {
@@ -64,7 +67,14 @@ export default function App() {
                     </div>
                     <div className="flex items-center gap-2">
                         <InstallPrompt />
-                        <nav className="flex gap-1 bg-dark-border p-1 rounded-full overflow-x-auto relative">
+                        <button
+                            onClick={startTour}
+                            className="p-1.5 rounded-full text-text-secondary hover:text-white hover:bg-dark-hover transition-colors"
+                            aria-label="Repetir Tour"
+                        >
+                            <HelpCircle className="w-5 h-5" />
+                        </button>
+                        <nav id="tour-tabs" className="flex gap-1 bg-dark-border p-1 rounded-full overflow-x-auto relative">
                             {tabs.map(tab => (
                                 <button
                                     key={tab.id}

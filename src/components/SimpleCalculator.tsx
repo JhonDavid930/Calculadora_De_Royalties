@@ -31,7 +31,7 @@ const SimpleCalculator = () => {
 
             <Card className="p-8 border-spotify-green/20 bg-gradient-to-b from-dark-surface to-dark-bg">
                 <div className="space-y-8">
-                    <div>
+                    <div id="tour-streams-input">
                         <label className="block text-sm font-medium text-text-secondary mb-2">Total de Streams</label>
                         <div className="relative">
                             <input
@@ -44,7 +44,7 @@ const SimpleCalculator = () => {
                         </div>
                     </div>
 
-                    <div>
+                    <div id="tour-country-selector">
                         <div className="flex justify-between mb-2">
                             <label className="text-sm font-medium text-text-secondary">Pago Promedio por Stream</label>
                             <span className="text-spotify-green font-mono font-bold">${simpleRate}</span>
@@ -65,7 +65,7 @@ const SimpleCalculator = () => {
                         </div>
                     </div>
 
-                    <div className="pt-6 border-t border-dark-border text-center overflow-hidden">
+                    <div id="tour-stat-cards" className="pt-6 border-t border-dark-border text-center overflow-hidden">
                         <p className="text-text-secondary text-sm uppercase tracking-wider mb-1">Ingreso Estimado</p>
                         <AnimatedCounter
                             value={streamsNumber * simpleRate}
