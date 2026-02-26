@@ -1,5 +1,9 @@
 import type { LucideIcon } from 'lucide-react';
 
+// ─── Re-export Branded Types ────────────────────────────────────
+export type { Streams, USD, PayRate } from './branded';
+export { createStreams, createUSD, createPayRate, calculateRevenue, addUSD, unsafeStreams, unsafeUSD, unsafePayRate } from './branded';
+
 // ─── Domain Types ───────────────────────────────────────────────
 
 /** Tier de pago de un país (1 = más alto, 5 = más bajo) */
