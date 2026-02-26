@@ -1,0 +1,39 @@
+# RoyaltyPro - Calculadora de Regalías Musicales (Streaming Royalties Calculator)
+
+## Acerca de
+RoyaltyPro es una aplicación web avanzada (Single Page Application) diseñada para músicos, managers y sellos discográficos independientes. Su propósito principal es ayudar a estimar los ingresos generados por reproducciones (streams) en las principales plataformas de distribución de música digital.
+
+**URL Oficial:** https://calculadora-de-royalties.vercel.app/
+
+## Características Principales (Funcionalidad)
+
+### 1. Calculadora Rápida (Simple Calculator)
+Permite ingresar una cantidad total de "Streams" (reproducciones) y calcula automáticamente las regalías estimadas para plataformas globales de streaming como:
+- Spotify (Rate promedio ~ USD $0.003 - $0.005 por stream)
+- Apple Music (Rate promedio ~ USD $0.007 - $0.01 por stream)
+- YouTube Music (Rate promedio inferior a Spotify)
+- Amazon Music, Tidal, Deezer y otras.
+
+Cuenta con botones de auto-llenado (Ej: "500K", "1M", "5M") para agilizar proyecciones y un slider visual que define el porcentaje de retención del artista vs. el sello o distribuidora.
+
+### 2. Calculadora Detallada por Países (Advanced Calculator)
+El valor de una reproducción varía drásticamente dependiendo del país donde se generó (debido a los planes de suscripción locales y la cuota de mercado).
+- Esta herramienta permite agregar países específicos mediante un "Selector Masivo".
+- Aplica diferentes "Tiers" o tasas locales precisas (ej. un stream en EE.UU. o Reino Unido vale más que uno en India, México o Brasil).
+- Arroja una estimación mucho más fiel a la realidad al ponderar el origen geográfico de las reproducciones.
+
+### 3. Calculadora de Metas (Goals)
+Herramienta de ingeniería inversa. El artista ingresa un ingreso monetario objetivo (Ej: USD $5,000) y el sistema determina cuántos millones de reproducciones necesita generar en cada plataforma para alcanzar dicha cifra.
+
+### 4. Interfaz Premium y Privacidad
+- La interfaz de usuario es "Hacker-Artista", impulsada por Framer Motion (60fps) adoptando estándares de usabilidad AAA (Mobile-First, PWA, Dark Mode).
+- **Zero-knowledge:** No requiere base de datos ni inicios de sesión. Todos los cálculos ocurren en tiempo real del lado del cliente para garantizar la máxima privacidad del artista, sin almacenar su volumen de ingresos.
+
+## Audiencia Objetivo
+- Artistas Independientes (DIY Artists)
+- Cantautores y Compositores
+- Managers Musicales
+- Analistas Financieros de Agencias Musicales
+- Productores fonográficos
+
+*(Última actualización de contexto: 2024)*
