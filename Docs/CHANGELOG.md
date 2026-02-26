@@ -1,8 +1,8 @@
 # 📜 Registro de Cambios (CHANGELOG)
 
-Versión actual: **v1.1.1** (Framer Motion & Wow Factor)
+Versión actual: **v2.1.0** (Framer Motion & Wow Factor)
 
-## [v1.1.1] - UX Premium & Animaciones
+## [v2.1.0] - UX Premium & Animaciones
 ### Añadido
 - **Framer Motion Integration:** Migración completa de CSS estático a animaciones físicas 60fps con `motion`.
 - **Animated Counters:** Números interpolados suavemente con `useSpring` para ingresos estimador, streams totales y rpm efectivo.
