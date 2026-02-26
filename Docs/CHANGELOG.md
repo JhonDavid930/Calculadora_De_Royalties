@@ -1,6 +1,19 @@
 # 📜 Registro de Cambios (CHANGELOG)
 
-Versión actual: **v1.1.0** (Testing & Precision Update)
+Versión actual: **v1.1.1** (Framer Motion & Wow Factor)
+
+## [v1.1.1] - UX Premium & Animaciones
+### Añadido
+- **Framer Motion Integration:** Migración completa de CSS estático a animaciones físicas 60fps con `motion`.
+- **Animated Counters:** Números interpolados suavemente con `useSpring` para ingresos estimador, streams totales y rpm efectivo.
+- **Tab Layout Transitions:** El indicador verde ("pill") ahora usa `layoutId` para deslizarse suavemente entre categorías.
+- **Transiciones Cinematográficas:** Fade y Blur al cambiar de herramientas (`AnimatePresence`).
+- **AnimatePresence List:** Filas de países en "Calculadora Detallada" entran y salen animadas al agregarlas o eliminarlas.
+- **Modales con Física:** Backdrop con fade y pop-up panels usando spring physics para modals de confirmación o selección.
+
+### Cambiado
+- Componentes Base (`Card`, `StatBox`) convertidos a `motion.div` para aplicar animaciones sincronizadas tipo "Stagger" (Entrada en cascada).
+- `setupTests.ts` actualizado con un mock síncrono para renderización de tests JSDOM de la librería motion/react.
 
 ## [v1.1.0] - QA Squad & Estabilidad
 ### Añadido

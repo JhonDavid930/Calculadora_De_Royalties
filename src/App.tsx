@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { motion, AnimatePresence } from 'motion/react';
 import Play from 'lucide-react/dist/esm/icons/play';
 import Globe from 'lucide-react/dist/esm/icons/globe';
 import Target from 'lucide-react/dist/esm/icons/target';
@@ -15,6 +16,19 @@ interface TabConfig {
     label: string;
     icon: LucideIcon;
 }
+
+// Variantes de animación para las transiciones entre tabs
+const pageVariants = {
+    initial: { opacity: 0, x: 20, filter: 'blur(4px)' },
+    animate: { opacity: 1, x: 0, filter: 'blur(0px)' },
+    exit: { opacity: 0, x: -20, filter: 'blur(4px)' },
+};
+
+const pageTransition = {
+    type: 'tween' as const,
+    ease: 'easeOut' as const,
+    duration: 0.3,
+};
 
 export default function App() {
     const [activeTab, setActiveTab] = useState('advanced');
@@ -50,18 +64,27 @@ export default function App() {
                     </div>
                     <div className="flex items-center gap-2">
                         <InstallPrompt />
-                        <nav className="flex gap-1 bg-dark-border p-1 rounded-full overflow-x-auto">
+                        <nav className="flex gap-1 bg-dark-border p-1 rounded-full overflow-x-auto relative">
                             {tabs.map(tab => (
                                 <button
                                     key={tab.id}
                                     onClick={() => setActiveTab(tab.id)}
-                                    className={`flex items-center gap-2 px-4 py-1.5 rounded-full text-sm font-medium transition-all whitespace-nowrap ${activeTab === tab.id
-                                        ? 'bg-spotify-green text-black shadow-lg shadow-green-900/20'
-                                        : 'text-text-secondary hover:text-white hover:bg-dark-hover'
+                                    className={`relative flex items-center gap-2 px-4 py-1.5 rounded-full text-sm font-medium transition-colors whitespace-nowrap z-10 ${activeTab === tab.id
+                                        ? 'text-black'
+                                        : 'text-text-secondary hover:text-white'
                                         }`}
                                 >
-                                    <tab.icon className="w-4 h-4" />
-                                    <span className="hidden sm:inline">{tab.label}</span>
+                                    {activeTab === tab.id && (
+                                        <motion.div
+                                            layoutId="activeTabPill"
+                                            className="absolute inset-0 bg-spotify-green rounded-full shadow-lg shadow-green-900/20"
+                                            transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+                                        />
+                                    )}
+                                    <span className="relative z-10 flex items-center gap-2">
+                                        <tab.icon className="w-4 h-4" />
+                                        <span className="hidden sm:inline">{tab.label}</span>
+                                    </span>
                                 </button>
                             ))}
                         </nav>
@@ -70,7 +93,18 @@ export default function App() {
             </header>
 
             <main className="max-w-6xl mx-auto px-4 py-8">
-                {renderContent()}
+                <AnimatePresence mode="wait">
+                    <motion.div
+                        key={activeTab}
+                        variants={pageVariants}
+                        initial="initial"
+                        animate="animate"
+                        exit="exit"
+                        transition={pageTransition}
+                    >
+                        {renderContent()}
+                    </motion.div>
+                </AnimatePresence>
             </main>
 
             <ReloadPrompt />

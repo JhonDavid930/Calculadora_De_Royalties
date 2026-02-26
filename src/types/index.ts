@@ -41,7 +41,7 @@ export interface CardProps {
 
 export interface StatBoxProps {
     label: string;
-    value: string;
+    value: React.ReactNode;
     subtext?: string;
     icon?: LucideIcon;
     highlight?: boolean;

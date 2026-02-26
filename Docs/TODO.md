@@ -10,10 +10,10 @@ This tracking document outlines the planned improvements and feature requests fo
     - [Goal: Enable "Add to Home Screen" functionality without App Store friction]
 
 ## 🎨 UX/UI Enhancements (The "Wow" Factor)
-- [ ] **Advanced Animations (Framer Motion)**
-    - Add smooth transitions between calculator views.
-    - Animate number counters for result displays.
-    - Micro-interactions on buttons and cards.
+- [x] **Advanced Animations (Framer Motion)**
+    - [x] Add smooth transitions between calculator views.
+    - [x] Animate number counters for result displays.
+    - [x] Micro-interactions on buttons and cards.
 - [ ] **Theme Toggle (Light/Dark Mode)**
     - *Currently blocked by branding decision (Spotify is always Dark), but good for accessibility.*
 - [ ] **Interactive Onboarding**
@@ -32,9 +32,9 @@ This tracking document outlines the planned improvements and feature requests fo
     - Integrate an API to get real-time exchange rates (USD/EUR/GBP/COP, etc.) instead of static rates.
 
 ## 🛠 Technical Debt & Code Quality
-- [ ] **Migration to TypeScript**
-    - Enforce stricter typing for financial calculations.
-    - Interface definitions for Royalty and Country objects.
+- [x] **Migration to TypeScript**
+    - [x] Enforce stricter typing for financial calculations.
+    - [x] Interface definitions for Royalty and Country objects.
 - [x] **End-to-End Testing (E2E)**
     - [x] Implement Cypress or Playwright to simulate user flows (Select Country -> Input Streams -> Calculate).
 - [ ] **Accessibility Audit (a11y)**
