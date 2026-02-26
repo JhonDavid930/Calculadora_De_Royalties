@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import Users from 'lucide-react/dist/esm/icons/users';
 import Card from './ui/Card';
+import AnimatedCounter from './ui/AnimatedCounter';
 
 const SimpleCalculator = () => {
     const [simpleStreams, setSimpleStreams] = useState('100000');
@@ -8,7 +9,7 @@ const SimpleCalculator = () => {
 
     const handleStreamsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const raw = e.target.value;
-        // Eliminar ceros iniciales: "06767" → "6767", "" se queda vacío
+        // Eliminar ceros iniciales: "06767" -> "6767", "" se queda vacío
         const cleaned = raw === '' ? '' : String(Number(raw));
         setSimpleStreams(cleaned);
     };
@@ -22,7 +23,7 @@ const SimpleCalculator = () => {
     };
 
     return (
-        <div className="max-w-2xl mx-auto space-y-6 animate-fadeIn">
+        <div className="max-w-2xl mx-auto space-y-6">
             <div className="text-center mb-8">
                 <h2 className="text-3xl font-bold mb-2 text-text-primary">Calculadora Rápida</h2>
                 <p className="text-text-secondary">Estimación basada en promedios globales.</p>
@@ -66,7 +67,11 @@ const SimpleCalculator = () => {
 
                     <div className="pt-6 border-t border-dark-border text-center overflow-hidden">
                         <p className="text-text-secondary text-sm uppercase tracking-wider mb-1">Ingreso Estimado</p>
-                        <h1 className="text-3xl md:text-5xl font-bold text-text-primary truncate">{formatCurrency(streamsNumber * simpleRate)}</h1>
+                        <AnimatedCounter
+                            value={streamsNumber * simpleRate}
+                            formatter={formatCurrency}
+                            className="text-3xl md:text-5xl font-bold text-text-primary"
+                        />
                     </div>
                 </div>
             </Card>

@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { motion, AnimatePresence } from 'motion/react';
 import DollarSign from 'lucide-react/dist/esm/icons/dollar-sign';
 import BarChart3 from 'lucide-react/dist/esm/icons/bar-chart-3';
 import Globe from 'lucide-react/dist/esm/icons/globe';
@@ -17,6 +18,7 @@ import {
 } from 'recharts';
 import Card from './ui/Card';
 import StatBox from './ui/StatBox';
+import AnimatedCounter from './ui/AnimatedCounter';
 import { COUNTRY_DB, COLORS } from '../constants/countries';
 import CountrySelectorModal from './ui/CountrySelectorModal';
 import ConfirmModal from './ui/ConfirmModal';
@@ -59,26 +61,29 @@ const AdvancedCalculator = () => {
     };
 
     return (
-        <div className="space-y-6 animate-fadeIn">
+        <div className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <StatBox
                     label="Ingresos Estimados"
-                    value={formatCurrency(totalRevenue)}
+                    value={<AnimatedCounter value={totalRevenue} formatter={formatCurrency} className="text-2xl font-bold text-spotify-green truncate" />}
                     subtext="Basado en los datos ingresados"
                     icon={DollarSign}
                     highlight
+                    index={0}
                 />
                 <StatBox
                     label="Total Streams"
-                    value={formatNumber(totalStreams)}
+                    value={<AnimatedCounter value={totalStreams} formatter={formatNumber} className="text-2xl font-bold text-text-primary truncate" />}
                     subtext="Volumen manual total"
                     icon={BarChart3}
+                    index={1}
                 />
                 <StatBox
                     label="RPM Efectivo"
-                    value={`$${effectiveRPM.toFixed(2)}`}
+                    value={<AnimatedCounter value={effectiveRPM} formatter={(v) => `$${v.toFixed(2)}`} className="text-2xl font-bold text-text-primary truncate" />}
                     subtext="Ingreso promedio por 1,000 streams"
                     icon={TrendingUp}
+                    index={2}
                 />
             </div>
 
@@ -111,84 +116,91 @@ const AdvancedCalculator = () => {
 
                             {/* Filas de Datos (Unified List) */}
                             <div className="space-y-4 md:space-y-0 max-h-[500px] overflow-y-auto custom-scrollbar pr-2">
-                                {countryData.map((item) => (
-                                    <div
-                                        key={item.id}
-                                        className="group bg-dark-bg md:bg-transparent p-4 md:p-0 rounded-lg md:rounded-none border border-dark-border md:border-0 md:border-b md:border-dark-border transition-colors duration-200 hover:bg-dark-hover/50 md:hover:bg-white/5 grid grid-cols-1 md:grid-cols-12 gap-4 items-center relative"
-                                    >
-
-                                        {/* Selector de País */}
-                                        <div className="col-span-12 md:col-span-4 relative">
-                                            <label className="block md:hidden text-xs text-text-secondary mb-1">País</label>
-                                            <div className="relative">
-                                                <select
-                                                    className={`w-full bg-[#222] border border-transparent rounded p-3 md:p-2 outline-none focus:border-spotify-green cursor-pointer appearance-none ${!item.country ? 'text-text-muted' : 'text-text-primary font-medium'} text-base`}
-                                                    value={item.country}
-                                                    onChange={(e) => selectCountry(item.id, e.target.value)}
-                                                >
-                                                    <option value="" disabled>Selecciona un país...</option>
-                                                    {COUNTRY_DB.map(c => (
-                                                        <option key={c.code} value={c.name}>
-                                                            {c.name} (Tier {c.tier})
-                                                        </option>
-                                                    ))}
-                                                </select>
-                                                {item.tier && (
-                                                    <span className={`absolute right-8 md:right-4 top-1/2 transform -translate-y-1/2 text-[10px] px-1.5 py-0.5 rounded border ${item.tier === 1 ? 'border-green-500 text-green-500' :
-                                                        item.tier === 2 ? 'border-blue-500 text-blue-500' :
-                                                            item.tier === 3 ? 'border-yellow-500 text-yellow-500' :
-                                                                'border-orange-500 text-orange-500'
-                                                        } pointer-events-none`}>
-                                                        T{item.tier}
-                                                    </span>
-                                                )}
-                                            </div>
-                                        </div>
-
-                                        {/* Input Streams */}
-                                        <div className="col-span-6 md:col-span-3">
-                                            <label className="block md:hidden text-xs text-text-secondary mb-1">Streams</label>
-                                            <input
-                                                type="number"
-                                                className="bg-transparent border-b border-dark-hover focus:border-spotify-green text-right w-full p-2 md:p-1.5 outline-none text-text-primary font-mono placeholder-dark-hover text-base transition-all duration-200 focus:ring-opacity-50"
-                                                value={item.streams || ''}
-                                                placeholder="0"
-                                                disabled={!item.country}
-                                                onChange={(e) => updateCountryStream(item.id, e.target.value)}
-                                            />
-                                        </div>
-
-                                        {/* Input Rate */}
-                                        <div className="col-span-6 md:col-span-2">
-                                            <label className="block md:hidden text-xs text-text-secondary mb-1">Rate ($)</label>
-                                            <input
-                                                type="number"
-                                                step="0.0001"
-                                                className="bg-transparent border-b border-transparent focus:border-spotify-green text-right w-full p-2 md:p-1.5 outline-none text-text-secondary focus:text-text-primary font-mono text-xs md:text-xs transition-colors duration-200"
-                                                value={item.rate || ''}
-                                                disabled={!item.country}
-                                                onChange={(e) => updateCountryRate(item.id, e.target.value)}
-                                            />
-                                        </div>
-
-                                        {/* Total Calculado */}
-                                        <div className="col-span-12 md:col-span-3 flex justify-between md:block items-center border-t border-dark-border md:border-0 pt-2 md:pt-0 mt-2 md:mt-0">
-                                            <span className="block md:hidden text-xs text-text-secondary">Total Estimado</span>
-                                            <div className="text-right font-mono text-spotify-green font-bold bg-dark-surface md:bg-transparent px-2 rounded truncate">
-                                                {formatCurrency(item.streams * item.rate)}
-                                            </div>
-                                        </div>
-
-                                        {/* Botón Eliminar (Flotante en Móvil) */}
-                                        <button
-                                            onClick={() => removeCountry(item.id)}
-                                            className="absolute top-2 right-2 md:static md:col-span-0.5 p-2 text-text-muted hover:text-red-500 transition-colors md:opacity-0 md:group-hover:opacity-100 bg-dark-surface md:bg-transparent rounded-full md:rounded-none shadow-sm md:shadow-none"
-                                            title="Eliminar fila"
+                                <AnimatePresence initial={false}>
+                                    {countryData.map((item) => (
+                                        <motion.div
+                                            key={item.id}
+                                            layout
+                                            initial={{ opacity: 0, height: 0, scale: 0.95 }}
+                                            animate={{ opacity: 1, height: 'auto', scale: 1 }}
+                                            exit={{ opacity: 0, height: 0, scale: 0.95 }}
+                                            transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+                                            className="group bg-dark-bg md:bg-transparent p-4 md:p-0 rounded-lg md:rounded-none border border-dark-border md:border-0 md:border-b md:border-dark-border transition-colors duration-200 hover:bg-dark-hover/50 md:hover:bg-white/5 grid grid-cols-1 md:grid-cols-12 gap-4 items-center relative"
                                         >
-                                            <Trash2 className="w-4 h-4" />
-                                        </button>
-                                    </div>
-                                ))}
+
+                                            {/* Selector de País */}
+                                            <div className="col-span-12 md:col-span-4 relative">
+                                                <label className="block md:hidden text-xs text-text-secondary mb-1">País</label>
+                                                <div className="relative">
+                                                    <select
+                                                        className={`w-full bg-[#222] border border-transparent rounded p-3 md:p-2 outline-none focus:border-spotify-green cursor-pointer appearance-none ${!item.country ? 'text-text-muted' : 'text-text-primary font-medium'} text-base`}
+                                                        value={item.country}
+                                                        onChange={(e) => selectCountry(item.id, e.target.value)}
+                                                    >
+                                                        <option value="" disabled>Selecciona un país...</option>
+                                                        {COUNTRY_DB.map(c => (
+                                                            <option key={c.code} value={c.name}>
+                                                                {c.name} (Tier {c.tier})
+                                                            </option>
+                                                        ))}
+                                                    </select>
+                                                    {item.tier && (
+                                                        <span className={`absolute right-8 md:right-4 top-1/2 transform -translate-y-1/2 text-[10px] px-1.5 py-0.5 rounded border ${item.tier === 1 ? 'border-green-500 text-green-500' :
+                                                            item.tier === 2 ? 'border-blue-500 text-blue-500' :
+                                                                item.tier === 3 ? 'border-yellow-500 text-yellow-500' :
+                                                                    'border-orange-500 text-orange-500'
+                                                            } pointer-events-none`}>
+                                                            T{item.tier}
+                                                        </span>
+                                                    )}
+                                                </div>
+                                            </div>
+
+                                            {/* Input Streams */}
+                                            <div className="col-span-6 md:col-span-3">
+                                                <label className="block md:hidden text-xs text-text-secondary mb-1">Streams</label>
+                                                <input
+                                                    type="number"
+                                                    className="bg-transparent border-b border-dark-hover focus:border-spotify-green text-right w-full p-2 md:p-1.5 outline-none text-text-primary font-mono placeholder-dark-hover text-base transition-all duration-200 focus:ring-opacity-50"
+                                                    value={item.streams || ''}
+                                                    placeholder="0"
+                                                    disabled={!item.country}
+                                                    onChange={(e) => updateCountryStream(item.id, e.target.value)}
+                                                />
+                                            </div>
+
+                                            {/* Input Rate */}
+                                            <div className="col-span-6 md:col-span-2">
+                                                <label className="block md:hidden text-xs text-text-secondary mb-1">Rate ($)</label>
+                                                <input
+                                                    type="number"
+                                                    step="0.0001"
+                                                    className="bg-transparent border-b border-transparent focus:border-spotify-green text-right w-full p-2 md:p-1.5 outline-none text-text-secondary focus:text-text-primary font-mono text-xs md:text-xs transition-colors duration-200"
+                                                    value={item.rate || ''}
+                                                    disabled={!item.country}
+                                                    onChange={(e) => updateCountryRate(item.id, e.target.value)}
+                                                />
+                                            </div>
+
+                                            {/* Total Calculado */}
+                                            <div className="col-span-12 md:col-span-3 flex justify-between md:block items-center border-t border-dark-border md:border-0 pt-2 md:pt-0 mt-2 md:mt-0">
+                                                <span className="block md:hidden text-xs text-text-secondary">Total Estimado</span>
+                                                <div className="text-right font-mono text-spotify-green font-bold bg-dark-surface md:bg-transparent px-2 rounded truncate">
+                                                    {formatCurrency(item.streams * item.rate)}
+                                                </div>
+                                            </div>
+
+                                            {/* Botón Eliminar (Flotante en Móvil) */}
+                                            <button
+                                                onClick={() => removeCountry(item.id)}
+                                                className="absolute top-2 right-2 md:static md:col-span-0.5 p-2 text-text-muted hover:text-red-500 transition-colors md:opacity-0 md:group-hover:opacity-100 bg-dark-surface md:bg-transparent rounded-full md:rounded-none shadow-sm md:shadow-none"
+                                                title="Eliminar fila"
+                                            >
+                                                <Trash2 className="w-4 h-4" />
+                                            </button>
+                                        </motion.div>
+                                    ))}
+                                </AnimatePresence>
                             </div>
                         </div>
 
