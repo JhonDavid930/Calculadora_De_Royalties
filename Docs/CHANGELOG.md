@@ -1,6 +1,14 @@
 # 📜 Registro de Cambios (CHANGELOG)
 
-Versión actual: **v2.1.0** (Framer Motion & Wow Factor)
+Versión actual: **v2.2.0** (Onboarding Interactivo)
+
+## [v2.2.0] - Onboarding & Tour Guiado
+### Añadido
+- **Tour Interactivo (driver.js):** Integración de un sistema de onboarding paso-a-paso para usuarios nuevos.
+- **Hook `useOnboarding`:** Lógica de estado mediante `localStorage` para garantizar que el tour automático se ejecuta una sola vez.
+- **Botón de Ayuda Manual:** Nuevo botón en el Header de navegación `(?)` para relanzar el tour de forma intencional en cualquier momento.
+- **CSS Overrides Premium:** Tema "Hacker-Artista" aplicado al overlay de `driver.js` (dark mode, botones flat, focus SVG no intrusivo).
+- **Mock de E2E:** Inyección de `localStorage` en el Setup de Playwright para evitar bloqueos del DOM durante los tests End-to-End.
 
 ## [v2.1.0] - UX Premium & Animaciones
 ### Añadido

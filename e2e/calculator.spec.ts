@@ -2,6 +2,12 @@ import { test, expect } from '@playwright/test';
 
 test.describe('RoyaltyPro Core Calculations', () => {
     test.beforeEach(async ({ page }) => {
+        // Inyectar estado en localStorage para evitar que el Onboarding Tour (driver.js)
+        // se dispare automáticamente y bloquee los clics del scraper E2E.
+        await page.addInitScript(() => {
+            window.localStorage.setItem('hasSeenTour', 'true');
+        });
+
         // Go to the main app URL before each test
         await page.goto('/');
     });
