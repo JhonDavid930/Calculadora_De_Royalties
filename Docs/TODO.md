@@ -16,8 +16,8 @@ This tracking document outlines the planned improvements and feature requests fo
     - [x] Micro-interactions on buttons and cards.
 - [ ] **Theme Toggle (Light/Dark Mode)**
     - *Currently blocked by branding decision (Spotify is always Dark), but good for accessibility.*
-- [ ] **Interactive Onboarding**
-    - Add a "Tour" for first-time users explaining input fields.
+- [x] **Interactive Onboarding**
+    - [x] Add a "Tour" for first-time users explaining input fields (driver.js).
 - [ ] **Skeleton Loading States**
     - Replace any loading spinners with skeleton screens for a perceived speed increase.
 

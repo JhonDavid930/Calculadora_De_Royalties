@@ -27,3 +27,77 @@
     transform: translateY(0);
   }
 }
+/* Driver.js Premium Hacker-Artist Theme Overrides */
+.driver-popover {
+  background-color: #121212 !important;
+  color: #FFFFFF !important;
+  border: 1px solid #27272a !important;
+  border-radius: 12px !important;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5) !important;
+}
+
+.driver-popover-title {
+  color: #1DB954 !important;
+  font-weight: 700 !important;
+  font-size: 1.125rem !important;
+}
+
+.driver-popover-description {
+  color: #a1a1aa !important; /* zinc-400 */
+  line-height: 1.5 !important;
+}
+
+/* Base button styles */
+.driver-popover-footer button {
+  background-color: transparent !important;
+  color: #FFFFFF !important;
+  text-shadow: none !important;
+  border: 1px solid #3f3f46 !important; /* zinc-700 */
+  border-radius: 6px !important;
+  padding: 6px 12px !important;
+  font-size: 0.875rem !important;
+  font-weight: 500 !important;
+  transition: all 0.2s ease !important;
+}
+
+.driver-popover-footer button:hover {
+  background-color: #27272a !important; /* zinc-800 */
+  border-color: #52525b !important; /* zinc-600 */
+}
+
+/* Primary/Next Action Button */
+.driver-popover-footer .driver-popover-next-btn,
+.driver-popover-footer .driver-popover-done-btn {
+  background-color: #1DB954 !important;
+  color: #000000 !important;
+  border: none !important;
+  font-weight: 600 !important;
+}
+
+.driver-popover-footer .driver-popover-next-btn:hover,
+.driver-popover-footer .driver-popover-done-btn:hover {
+  background-color: #1ed760 !important;
+}
+
+/* Previous action button */
+.driver-popover-footer .driver-popover-prev-btn {
+  color: #a1a1aa !important;
+  border-color: transparent !important;
+}
+
+.driver-popover-footer .driver-popover-prev-btn:hover {
+  background-color: #27272a !important;
+  color: #FFFFFF !important;
+}
+
+.driver-popover-progress-text {
+  color: #71717a !important; /* zinc-500 */
+  font-size: 0.8rem !important;
+}
+
+.driver-popover-close-btn {
+  color: #a1a1aa !important; /* zinc-400 */
+}
+.driver-popover-close-btn:hover {
+  color: #ef4444 !important; /* red-500 al hacer hover para omitir */
+}
