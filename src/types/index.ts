@@ -9,12 +9,23 @@ export { createStreams, createUSD, createPayRate, calculateRevenue, addUSD, unsa
 /** Tier de pago de un país (1 = más alto, 5 = más bajo) */
 export type CountryTier = 1 | 2 | 3 | 4 | 5;
 
+/** Regiones para agrupar países */
+export type Region = 
+    | 'North America'
+    | 'Latin America'
+    | 'Europe'
+    | 'Asia'
+    | 'Oceania'
+    | 'Africa'
+    | 'Middle East';
+
 /** País en la base de datos estática con su rate estimado */
 export interface Country {
     name: string;
     rate: number;
     tier: CountryTier;
     code: string;
+    region: Region;
 }
 
 /** Fila de datos de país en la calculadora (estado mutable) */
