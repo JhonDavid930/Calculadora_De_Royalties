@@ -1,10 +1,12 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useCallback } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import X from 'lucide-react/dist/esm/icons/x';
 import Search from 'lucide-react/dist/esm/icons/search';
 import Check from 'lucide-react/dist/esm/icons/check';
 import Plus from 'lucide-react/dist/esm/icons/plus';
 import Globe from 'lucide-react/dist/esm/icons/globe';
+import ChevronDown from 'lucide-react/dist/esm/icons/chevron-down';
+import ChevronRight from 'lucide-react/dist/esm/icons/chevron-right';
 import { COUNTRY_DB } from '../../constants/countries';
 import type { CountrySelectorModalProps, Region, Country } from '../../types';
 
@@ -22,6 +24,7 @@ const CountrySelectorModal = ({ isOpen, onClose, onAddCountries, existingCountri
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedCodes, setSelectedCodes] = useState<string[]>([]);
     const [activeRegion, setActiveRegion] = useState<Region | 'All'>('All');
+    const [collapsedRegions, setCollapsedRegions] = useState<Set<string>>(new Set());
 
     // Filter available countries based on search and region
     const availableCountries = useMemo(() => {
@@ -47,9 +50,12 @@ const CountrySelectorModal = ({ isOpen, onClose, onAddCountries, existingCountri
         return groups;
     }, [availableCountries, searchTerm, activeRegion]);
 
-    const isAllSelected = availableCountries.length > 0 && availableCountries.every(c => selectedCodes.includes(c.name));
+    // Performance: Set for O(1) selection checks
+    const selectedSet = useMemo(() => new Set(selectedCodes), [selectedCodes]);
 
-    const handleToggleAll = (): void => {
+    const isAllSelected = availableCountries.length > 0 && availableCountries.every(c => selectedSet.has(c.name));
+
+    const handleToggleAll = useCallback((): void => {
         if (isAllSelected) {
             const visibleNames = new Set(availableCountries.map(c => c.name));
             setSelectedCodes(prev => prev.filter(name => !visibleNames.has(name)));
@@ -58,9 +64,9 @@ const CountrySelectorModal = ({ isOpen, onClose, onAddCountries, existingCountri
             availableCountries.forEach(c => newSelected.add(c.name));
             setSelectedCodes(Array.from(newSelected));
         }
-    };
+    }, [isAllSelected, availableCountries, selectedCodes]);
 
-    const handleSelect = (countryName: string): void => {
+    const handleSelect = useCallback((countryName: string): void => {
         setSelectedCodes(prev => {
             if (prev.includes(countryName)) {
                 return prev.filter(c => c !== countryName);
@@ -68,7 +74,7 @@ const CountrySelectorModal = ({ isOpen, onClose, onAddCountries, existingCountri
                 return [...prev, countryName];
             }
         });
-    };
+    }, []);
 
     const handleAdd = (): void => {
         onAddCountries(selectedCodes);
@@ -78,12 +84,37 @@ const CountrySelectorModal = ({ isOpen, onClose, onAddCountries, existingCountri
         onClose();
     };
 
-    const renderCountryItem = (country: Country) => {
-        const isSelected = selectedCodes.includes(country.name);
+    const toggleRegion = (region: string) => {
+        setCollapsedRegions(prev => {
+            const next = new Set(prev);
+            if (next.has(region)) {
+                next.delete(region);
+            } else {
+                next.add(region);
+            }
+            return next;
+        });
+    };
+
+    const toggleAllRegions = () => {
+        if (groupedCountries) {
+            const visibleRegions = Object.keys(groupedCountries);
+            if (collapsedRegions.size === visibleRegions.length) {
+                setCollapsedRegions(new Set()); // Expand all
+            } else {
+                setCollapsedRegions(new Set(visibleRegions)); // Collapse all
+            }
+        }
+    };
+
+    const renderCountryItem = useCallback((country: Country) => {
+        const isSelected = selectedSet.has(country.name);
         return (
             <div
                 key={country.code}
                 onClick={() => handleSelect(country.name)}
+                role="option"
+                aria-selected={isSelected}
                 className={`flex items-center justify-between p-3 rounded-lg cursor-pointer transition-all border ${isSelected ? 'bg-green-900/20 border-spotify-green/50' : 'bg-transparent border-transparent hover:bg-dark-hover'}`}
             >
                 <div className="flex items-center gap-3">
@@ -98,7 +129,7 @@ const CountrySelectorModal = ({ isOpen, onClose, onAddCountries, existingCountri
                 <span className={`text-xs font-mono ml-4 ${isSelected ? 'text-spotify-green/80' : 'text-dark-border'}`}>{country.code}</span>
             </div>
         );
-    };
+    }, [selectedSet, handleSelect]);
 
     return (
         <AnimatePresence>
@@ -168,13 +199,23 @@ const CountrySelectorModal = ({ isOpen, onClose, onAddCountries, existingCountri
                             <span className="text-text-secondary font-medium">
                                 {availableCountries.length} {availableCountries.length === 1 ? 'país encontrado' : 'países encontrados'}
                             </span>
-                            <button
-                                onClick={handleToggleAll}
-                                className="font-bold text-spotify-green hover:text-green-400 transition-colors uppercase tracking-wider text-[10px] py-1 px-2 rounded hover:bg-spotify-green/10"
-                                disabled={availableCountries.length === 0}
-                            >
-                                {isAllSelected ? "Deseleccionar esta vista" : "Seleccionar esta vista"}
-                            </button>
+                            <div className="flex items-center gap-2">
+                                {groupedCountries && (
+                                    <button
+                                        onClick={toggleAllRegions}
+                                        className="font-bold text-text-muted hover:text-white transition-colors uppercase tracking-wider text-[10px] py-1 px-2 rounded hover:bg-dark-hover border border-transparent hover:border-dark-border"
+                                    >
+                                        {collapsedRegions.size === Object.keys(groupedCountries).length ? "Expandir Regiones" : "Contraer Regiones"}
+                                    </button>
+                                )}
+                                <button
+                                    onClick={handleToggleAll}
+                                    className="font-bold text-spotify-green hover:text-green-400 transition-colors uppercase tracking-wider text-[10px] py-1 px-2 rounded hover:bg-spotify-green/10"
+                                    disabled={availableCountries.length === 0}
+                                >
+                                    {isAllSelected ? "Deseleccionar esta vista" : "Seleccionar esta vista"}
+                                </button>
+                            </div>
                         </div>
 
                         {/* List Area */}
@@ -182,17 +223,41 @@ const CountrySelectorModal = ({ isOpen, onClose, onAddCountries, existingCountri
                             {availableCountries.length > 0 ? (
                                 groupedCountries ? (
                                     // Grouped View (No strict filters active)
-                                    <div className="space-y-6 pb-4">
-                                        {Object.entries(groupedCountries).map(([region, countries]) => (
-                                            <div key={region} className="space-y-2">
-                                                <h4 className="sticky top-0 z-10 bg-dark-bg/95 backdrop-blur-sm px-3 py-1.5 text-xs font-bold text-text-muted uppercase tracking-wider border-b border-dark-border/50 rounded-t-lg">
-                                                    {region}
-                                                </h4>
-                                                <div className="grid grid-cols-1 md:grid-cols-2 gap-1 px-1">
-                                                    {countries.map(renderCountryItem)}
+                                    <div className="space-y-4 pb-4">
+                                        {Object.entries(groupedCountries).map(([region, countries]) => {
+                                            const isCollapsed = collapsedRegions.has(region);
+                                            return (
+                                                <div key={region} className="space-y-1 bg-dark-surface/30 rounded-lg border border-dark-border/30 overflow-hidden">
+                                                    <div
+                                                        className="sticky top-0 z-10 bg-dark-bg/95 backdrop-blur-sm px-3 py-2 border-b border-dark-border/50 flex justify-between items-center cursor-pointer hover:bg-dark-surface transition-colors"
+                                                        onClick={() => toggleRegion(region)}
+                                                    >
+                                                        <h4 className="text-xs font-bold text-text-muted uppercase tracking-wider flex items-center gap-2">
+                                                            {region}
+                                                            <span className="text-[10px] font-normal text-text-muted bg-dark-hover px-1.5 py-0.5 rounded-full">{countries.length}</span>
+                                                        </h4>
+                                                        <button className="text-text-muted hover:text-white transition-colors">
+                                                            {isCollapsed ? <ChevronRight className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+                                                        </button>
+                                                    </div>
+                                                    <AnimatePresence initial={false}>
+                                                        {!isCollapsed && (
+                                                            <motion.div
+                                                                initial={{ height: 0, opacity: 0 }}
+                                                                animate={{ height: 'auto', opacity: 1 }}
+                                                                exit={{ height: 0, opacity: 0 }}
+                                                                transition={{ duration: 0.2 }}
+                                                                className="px-1 pb-1"
+                                                            >
+                                                                <div className="grid grid-cols-1 md:grid-cols-2 gap-1">
+                                                                    {countries.map(renderCountryItem)}
+                                                                </div>
+                                                            </motion.div>
+                                                        )}
+                                                    </AnimatePresence>
                                                 </div>
-                                            </div>
-                                        ))}
+                                            );
+                                        })}
                                     </div>
                                 ) : (
                                     // Flat View (Search or Specific Region Active)

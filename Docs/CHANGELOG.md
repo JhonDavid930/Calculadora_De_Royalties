@@ -1,6 +1,12 @@
 # 📜 Registro de Cambios (CHANGELOG)
 
-Versión actual: **v2.2.0** (Onboarding Interactivo)
+Versión actual: **v2.3.0** (Globalización & UI Agrupada)
+
+## [v2.3.0] - Expansión Global de Países
+### Añadido
+- **Base de Datos Extendida:** Más de 100 países agregados a la calculadora con tasas estimadas actualizadas según datos de Spotify 2024.
+- **Tipado Regional:** Nuevo tipo de dato `Region` que clasifica cada país por continente (North America, Latin America, Europe, Asia, etc.).
+- **CountrySelectorModal Rediseñado:** La UI del buscador de países ahora categoriza y agrupa los resultados visualmente por continente, incluyendo "Chips" de filtrado rápido.
 
 ## [v2.2.0] - Onboarding & Tour Guiado
 ### Añadido
