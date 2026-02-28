@@ -14,6 +14,13 @@ describe('countries constants', () => {
             });
         });
 
+        it('should have valid region values', () => {
+            const validRegions = ['North America', 'Latin America', 'Europe', 'Asia', 'Oceania', 'Africa', 'Middle East'];
+            COUNTRY_DB.forEach((country) => {
+                expect(validRegions).toContain(country.region);
+            });
+        });
+
         it('should have positive rates for all countries', () => {
             COUNTRY_DB.forEach((country) => {
                 expect(country.rate).toBeGreaterThan(0);

@@ -140,7 +140,7 @@ const AdvancedCalculator = () => {
                                                         <option value="" disabled>Selecciona un país...</option>
                                                         {COUNTRY_DB.map(c => (
                                                             <option key={c.code} value={c.name}>
-                                                                {c.name} (Tier {c.tier})
+                                                                {c.name}
                                                             </option>
                                                         ))}
                                                     </select>

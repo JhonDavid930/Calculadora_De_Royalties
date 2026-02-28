@@ -64,7 +64,7 @@ describe('useRoyaltyCalculations', () => {
         });
 
         expect(result.current.totalStreams).toBe(1000);
-        // 1000 * 0.0040 = 4.00
-        expect(result.current.totalRevenue).toBe(4.00);
+        // 1000 * 0.0042 = 4.20
+        expect(result.current.totalRevenue).toBe(4.20);
     });
 });
