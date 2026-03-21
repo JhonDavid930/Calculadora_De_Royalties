@@ -1,8 +1,22 @@
-# 📜 Registro de Cambios (CHANGELOG)
+# Registro de Cambios (CHANGELOG)
 
-Versión actual: **v2.3.0** (Globalización & UI Agrupada)
+Version actual: **v2.4.0** (UI Premium & Modal Fix)
 
-## [v2.3.0] - Expansión Global de Países
+## [v2.4.0] - 2025-03-21 - Glassmorphism UI & CountrySelectorModal Fix
+### Corregido
+- **CountrySelectorModal: Header invisible (Critical Bug):** El wrapper `motion.div` de Framer Motion computaba su altura como 448px en vez de 100vh, causando que `items-center` empujara el modal fuera del viewport. Solucionado reemplazando el overlay con un `div` nativo con `height: 100dvh`.
+- **Layout del Modal:** Migrado de Flexbox a CSS Grid con template `[auto_auto_auto_1fr_auto]` para anclar permanentemente Header, Search, Chips, Lista y Footer.
+- **Scrollbar horizontal cortada:** Restaurada la barra de scroll nativa en los chips de continentes para navegar entre regiones.
+- **Tests Card.test.tsx:** Actualizados assertions de clase CSS (`glass-panel` en lugar de `bg-dark-surface`).
+
+### Cambiado
+- **Tema Visual Premium:** Aplicado design system con glassmorphism refinado, bordes `border-white/10`, fondos solidos `#0a0a0a`/`#121212` y efectos de glow verde en codigos de pais seleccionados.
+- **Country Codes en verde:** Los codigos ISO de paises ahora se muestran en `text-spotify-green` con efecto `drop-shadow` al seleccionarlos.
+- **Hover Effects en AdvancedCalculator:** Eliminado el hover gris "sucio" en filas de la tabla. Select boxes ahora son transparentes con hover sutil.
+- **Modal Height:** Ajustado a `min(80vh, calc(100dvh - 2rem))` para adaptarse a cualquier viewport sin desbordamientos.
+- **Search Bar & Filters:** Siempre visibles con contraste alto (`bg-[#181818]`, `border-white/20`) independientemente del estado de seleccion.
+
+## [v2.3.0] - Expansion Global de Paises
 ### Añadido
 - **Base de Datos Extendida:** Más de 100 países agregados a la calculadora con tasas estimadas actualizadas según datos de Spotify 2024.
 - **Tipado Regional:** Nuevo tipo de dato `Region` que clasifica cada país por continente (North America, Latin America, Europe, Asia, etc.).
