@@ -125,7 +125,7 @@ const AdvancedCalculator = () => {
                                             animate={{ opacity: 1, height: 'auto', scale: 1 }}
                                             exit={{ opacity: 0, height: 0, scale: 0.95 }}
                                             transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-                                            className="group bg-dark-bg md:bg-transparent p-4 md:p-0 rounded-lg md:rounded-none border border-dark-border md:border-0 md:border-b md:border-dark-border transition-colors duration-200 hover:bg-dark-hover/50 md:hover:bg-white/5 grid grid-cols-1 md:grid-cols-12 gap-4 items-center relative"
+                                            className="group bg-transparent p-4 md:p-0 rounded-lg md:rounded-none border border-white/5 md:border-0 md:border-b transition-colors duration-200 hover:bg-white/[0.03] grid grid-cols-1 md:grid-cols-12 gap-4 items-center relative"
                                         >
 
                                             {/* Selector de País */}
@@ -133,13 +133,13 @@ const AdvancedCalculator = () => {
                                                 <label className="block md:hidden text-xs text-text-secondary mb-1">País</label>
                                                 <div className="relative">
                                                     <select
-                                                        className={`w-full bg-[#222] border border-transparent rounded p-3 md:p-2 outline-none focus:border-spotify-green cursor-pointer appearance-none ${!item.country ? 'text-text-muted' : 'text-text-primary font-medium'} text-base`}
+                                                        className={`w-full bg-transparent border border-transparent rounded p-3 md:p-2 outline-none cursor-pointer appearance-none ${!item.country ? 'text-text-muted' : 'text-text-primary font-medium'} text-base transition-colors hover:bg-white/5 focus:bg-white/10`}
                                                         value={item.country}
                                                         onChange={(e) => selectCountry(item.id, e.target.value)}
                                                     >
-                                                        <option value="" disabled>Selecciona un país...</option>
+                                                        <option value="" disabled className="bg-[#121212] text-white">Selecciona un país...</option>
                                                         {COUNTRY_DB.map(c => (
-                                                            <option key={c.code} value={c.name}>
+                                                            <option key={c.code} value={c.name} className="bg-[#121212] text-white">
                                                                 {c.name}
                                                             </option>
                                                         ))}

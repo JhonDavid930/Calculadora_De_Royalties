@@ -29,7 +29,7 @@ const SimpleCalculator = () => {
                 <p className="text-text-secondary">Estimación basada en promedios globales.</p>
             </div>
 
-            <Card className="p-8 border-spotify-green/20 bg-gradient-to-b from-dark-surface to-dark-bg">
+            <Card className="p-8">
                 <div className="space-y-8">
                     <div id="tour-streams-input">
                         <label className="block text-sm font-medium text-text-secondary mb-2">Total de Streams</label>
@@ -38,7 +38,7 @@ const SimpleCalculator = () => {
                                 type="number"
                                 value={simpleStreams}
                                 onChange={handleStreamsChange}
-                                className="w-full bg-dark-border border border-dark-hover rounded-md p-4 pr-14 text-2xl font-bold text-text-primary focus:outline-none focus:border-spotify-green focus:ring-2 focus:ring-spotify-green/50 transition-colors duration-200 font-mono"
+                                className="w-full glass-input pr-14 text-2xl font-bold font-mono"
                             />
                             <Users className="absolute right-4 top-1/2 transform -translate-y-1/2 text-text-muted" />
                         </div>

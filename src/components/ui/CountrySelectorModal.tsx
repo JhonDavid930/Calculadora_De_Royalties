@@ -26,15 +26,16 @@ const CountrySelectorModal = ({ isOpen, onClose, onAddCountries, existingCountri
     const [activeRegion, setActiveRegion] = useState<Region | 'All'>('All');
     const [collapsedRegions, setCollapsedRegions] = useState<Set<string>>(new Set());
 
+    const existingCodes = useMemo(() => new Set(existingCountries.map(c => c.country)), [existingCountries]);
+
     // Filter available countries based on search and region
     const availableCountries = useMemo(() => {
-        const existingCodes = new Set(existingCountries.map(c => c.country));
         return COUNTRY_DB.filter(c =>
             !existingCodes.has(c.name) &&
             c.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
             (activeRegion === 'All' || c.region === activeRegion)
         );
-    }, [searchTerm, activeRegion, existingCountries]);
+    }, [searchTerm, activeRegion, existingCodes]);
 
     // Group available countries by region for structured display
     const groupedCountries = useMemo(() => {
@@ -109,13 +110,14 @@ const CountrySelectorModal = ({ isOpen, onClose, onAddCountries, existingCountri
 
     const renderCountryItem = useCallback((country: Country) => {
         const isSelected = selectedSet.has(country.name);
+        
         return (
             <div
                 key={country.code}
                 onClick={() => handleSelect(country.name)}
                 role="option"
                 aria-selected={isSelected}
-                className={`flex items-center justify-between p-3 rounded-lg cursor-pointer transition-all border ${isSelected ? 'bg-green-900/20 border-spotify-green/50' : 'bg-transparent border-transparent hover:bg-dark-hover'}`}
+                className={`flex items-center justify-between p-3 rounded-lg transition-all border ${isSelected ? 'bg-green-900/20 border-spotify-green/50 cursor-pointer' : 'bg-transparent border-transparent hover:bg-dark-hover cursor-pointer'}`}
             >
                 <div className="flex items-center gap-3">
                     <div className={`w-5 h-5 rounded border flex items-center justify-center transition-colors ${isSelected ? 'bg-spotify-green border-spotify-green' : 'border-text-muted'}`}>
@@ -126,7 +128,7 @@ const CountrySelectorModal = ({ isOpen, onClose, onAddCountries, existingCountri
                         <p className="text-xs text-text-secondary">Tier {country.tier} • Est. ${country.rate}</p>
                     </div>
                 </div>
-                <span className={`text-xs font-mono ml-4 ${isSelected ? 'text-spotify-green/80' : 'text-dark-border'}`}>{country.code}</span>
+                <span className={`text-xs font-mono ml-4 ${isSelected ? 'text-spotify-green font-bold drop-shadow-[0_0_8px_rgba(29,185,84,0.8)]' : 'text-spotify-green/60'}`}>{country.code}</span>
             </div>
         );
     }, [selectedSet, handleSelect]);
@@ -134,23 +136,23 @@ const CountrySelectorModal = ({ isOpen, onClose, onAddCountries, existingCountri
     return (
         <AnimatePresence>
             {isOpen && (
-                <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    transition={{ duration: 0.2 }}
-                    className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 pt-10 pb-20 md:py-8"
+                <div
+                    className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4"
+                    onClick={onClose}
+                    style={{ height: '100dvh' }}
                 >
                     <motion.div
-                        initial={{ opacity: 0, scale: 0.95, y: 10 }}
-                        animate={{ opacity: 1, scale: 1, y: 0 }}
-                        exit={{ opacity: 0, scale: 0.95, y: 10 }}
+                        initial={{ opacity: 0, scale: 0.95 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0.95 }}
                         transition={{ type: 'spring', stiffness: 400, damping: 30 }}
-                        className="bg-dark-surface border border-dark-border w-full max-w-2xl rounded-xl shadow-2xl overflow-hidden flex flex-col h-[85vh] md:h-[80vh]"
+                        onClick={(e) => e.stopPropagation()}
+                        className="bg-[#0a0a0a] border border-white/10 w-full max-w-3xl rounded-2xl shadow-2xl overflow-hidden grid grid-rows-[auto_auto_auto_1fr_auto]"
+                        style={{ height: 'min(80vh, calc(100dvh - 2rem))' }}
                     >
 
                         {/* Header */}
-                        <div className="p-4 border-b border-dark-border flex justify-between items-center bg-dark-bg shrink-0">
+                        <div className="p-4 border-b border-white/5 flex justify-between items-center bg-[#0a0a0a]">
                             <h3 className="text-lg font-bold text-white flex items-center gap-2">
                                 <Globe className="w-5 h-5 text-spotify-green" />
                                 Agregar Regiones y Países
@@ -161,13 +163,13 @@ const CountrySelectorModal = ({ isOpen, onClose, onAddCountries, existingCountri
                         </div>
 
                         {/* Search & Filters */}
-                        <div className="p-4 border-b border-dark-border bg-dark-bg shrink-0 space-y-3">
+                        <div className="p-4 border-b border-white/5 bg-[#0a0a0a] space-y-3">
                             <div className="relative">
-                                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted" />
+                                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-secondary" />
                                 <input
                                     type="text"
                                     placeholder="Buscar país por nombre..."
-                                    className="w-full bg-dark-surface border border-dark-border rounded-lg pl-10 pr-4 py-2.5 text-sm text-white focus:border-spotify-green focus:ring-1 focus:ring-spotify-green outline-none transition-all placeholder:text-text-muted"
+                                    className="w-full bg-[#181818] border border-white/20 hover:border-white/30 rounded-lg pl-10 pr-4 py-3 text-sm text-white focus:border-spotify-green focus:ring-1 focus:ring-spotify-green outline-none transition-all placeholder:text-text-secondary"
                                     value={searchTerm}
                                     onChange={(e) => setSearchTerm(e.target.value)}
                                     autoFocus
@@ -175,7 +177,7 @@ const CountrySelectorModal = ({ isOpen, onClose, onAddCountries, existingCountri
                             </div>
 
                             {/* Regions Scrollable Chips */}
-                            <div className="flex gap-2 overflow-x-auto scrolly-none pb-1 -mx-2 px-2 md:mx-0 md:px-0">
+                            <div className="flex gap-2 overflow-x-auto pb-2 -mx-2 px-2 md:mx-0 md:px-0">
                                 <button
                                     onClick={() => setActiveRegion('All')}
                                     className={`whitespace-nowrap px-3 py-1.5 rounded-full text-xs font-medium transition-colors border ${activeRegion === 'All' ? 'bg-spotify-green text-black border-spotify-green' : 'bg-transparent text-text-secondary border-dark-border hover:text-white hover:border-gray-500'}`}
@@ -195,7 +197,7 @@ const CountrySelectorModal = ({ isOpen, onClose, onAddCountries, existingCountri
                         </div>
 
                         {/* Bulk Actions Bar */}
-                        <div className="flex justify-between items-center px-4 py-2 border-b border-dark-border bg-dark-surface text-xs shrink-0 shadow-sm z-10 relative">
+                        <div className="flex justify-between items-center px-4 py-2 border-b border-white/5 bg-[#121212] text-xs shadow-sm z-10 relative">
                             <span className="text-text-secondary font-medium">
                                 {availableCountries.length} {availableCountries.length === 1 ? 'país encontrado' : 'países encontrados'}
                             </span>
@@ -210,7 +212,7 @@ const CountrySelectorModal = ({ isOpen, onClose, onAddCountries, existingCountri
                                 )}
                                 <button
                                     onClick={handleToggleAll}
-                                    className="font-bold text-spotify-green hover:text-green-400 transition-colors uppercase tracking-wider text-[10px] py-1 px-2 rounded hover:bg-spotify-green/10"
+                                    className={`font-bold uppercase tracking-wider text-[10px] py-1 px-2 rounded transition-colors ${availableCountries.length === 0 ? 'text-text-muted cursor-not-allowed' : 'text-spotify-green hover:text-green-400 hover:bg-spotify-green/10'}`}
                                     disabled={availableCountries.length === 0}
                                 >
                                     {isAllSelected ? "Deseleccionar esta vista" : "Seleccionar esta vista"}
@@ -219,7 +221,7 @@ const CountrySelectorModal = ({ isOpen, onClose, onAddCountries, existingCountri
                         </div>
 
                         {/* List Area */}
-                        <div className="flex-1 overflow-y-auto p-2 bg-dark-bg/50">
+                        <div className="overflow-y-auto p-3 bg-[#0a0a0a]">
                             {availableCountries.length > 0 ? (
                                 groupedCountries ? (
                                     // Grouped View (No strict filters active)
@@ -227,9 +229,9 @@ const CountrySelectorModal = ({ isOpen, onClose, onAddCountries, existingCountri
                                         {Object.entries(groupedCountries).map(([region, countries]) => {
                                             const isCollapsed = collapsedRegions.has(region);
                                             return (
-                                                <div key={region} className="space-y-1 bg-dark-surface/30 rounded-lg border border-dark-border/30 overflow-hidden">
+                                                <div key={region} className="space-y-1 bg-[#121212] rounded-lg border border-white/5 overflow-hidden">
                                                     <div
-                                                        className="sticky top-0 z-10 bg-dark-bg/95 backdrop-blur-sm px-3 py-2 border-b border-dark-border/50 flex justify-between items-center cursor-pointer hover:bg-dark-surface transition-colors"
+                                                        className="sticky top-0 z-10 bg-[#0a0a0a]/95 backdrop-blur-sm px-3 py-2 border-b border-white/5 flex justify-between items-center cursor-pointer hover:bg-[#1a1a1a] transition-colors"
                                                         onClick={() => toggleRegion(region)}
                                                     >
                                                         <h4 className="text-xs font-bold text-text-muted uppercase tracking-wider flex items-center gap-2">
@@ -274,8 +276,8 @@ const CountrySelectorModal = ({ isOpen, onClose, onAddCountries, existingCountri
                         </div>
 
                         {/* Footer */}
-                        <div className="p-4 border-t border-dark-border bg-dark-bg flex justify-between items-center shrink-0">
-                            <span className="text-sm font-medium text-text-primary bg-dark-surface px-3 py-1 rounded-full border border-dark-border">
+                        <div className="p-4 border-t border-white/5 bg-[#0a0a0a] flex justify-between items-center">
+                            <span className="text-sm font-medium text-text-primary bg-[#121212] px-3 py-1 rounded-full border border-white/10">
                                 <span className={selectedCodes.length > 0 ? 'text-spotify-green' : ''}>{selectedCodes.length}</span> seleccionados
                             </span>
                             <div className="flex gap-3">
@@ -293,7 +295,7 @@ const CountrySelectorModal = ({ isOpen, onClose, onAddCountries, existingCountri
                             </div>
                         </div>
                     </motion.div>
-                </motion.div>
+                </div>
             )}
         </AnimatePresence>
     );

@@ -11,7 +11,7 @@ const StatBox = ({ label, value, subtext, icon: Icon, highlight = false, index =
         animate={{ opacity: 1, y: 0 }}
         transition={{ type: 'spring', stiffness: 300, damping: 30, delay: index * 0.1 }}
         whileHover={{ y: -2, transition: { duration: 0.2 } }}
-        className="bg-dark-border p-4 rounded-md flex items-center justify-between gap-3 group transition-colors duration-200 cursor-pointer overflow-hidden ring-offset-dark-bg focus-within:ring-2 focus-within:ring-spotify-green hover:bg-dark-hover"
+        className="glass-panel rounded-xl p-4 flex items-center justify-between gap-3 group cursor-pointer overflow-hidden focus-within:ring-2 focus-within:ring-spotify-green hover:-translate-y-1 hover:shadow-neon relative"
     >
         <div className="min-w-0 flex-1">
             <p className="text-text-secondary text-sm font-medium mb-1">{label}</p>

@@ -55,8 +55,11 @@ export default function App() {
     ];
 
     return (
-        <div className="min-h-screen bg-dark-bg text-text-primary font-sans selection:bg-spotify-green selection:text-black">
-            <header className="border-b border-dark-border bg-black sticky top-0 z-50">
+        <div className="min-h-screen bg-dark-bg text-text-primary font-sans selection:bg-spotify-green selection:text-black relative overflow-hidden">
+            {/* Iluminación de acento volumétrica (Pro Max) */}
+            <div className="absolute top-[-10%] left-1/2 -translate-x-1/2 w-[60vw] h-[500px] bg-spotify-green/10 rounded-[100%] blur-[120px] pointer-events-none" />
+            
+            <header className="glass-header sticky top-0 z-50">
                 <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
                     <div className="flex items-center gap-2">
                         <div className="bg-spotify-green p-1.5 rounded-full mt-1.5 sm:mt-0">
@@ -79,9 +82,9 @@ export default function App() {
                                 <button
                                     key={tab.id}
                                     onClick={() => setActiveTab(tab.id)}
-                                    className={`relative flex items-center gap-2 px-4 py-1.5 rounded-full text-sm font-medium transition-colors whitespace-nowrap z-10 ${activeTab === tab.id
+                                    className={`relative flex items-center gap-2 px-4 py-1.5 rounded-full text-sm font-medium transition-all duration-300 ease-out whitespace-nowrap z-10 active:scale-[0.97] hover:-translate-y-0.5 ${activeTab === tab.id
                                         ? 'text-black'
-                                        : 'text-text-secondary hover:text-white'
+                                        : 'text-text-secondary hover:text-white hover:bg-white/5'
                                         }`}
                                 >
                                     {activeTab === tab.id && (
