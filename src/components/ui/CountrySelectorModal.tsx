@@ -163,7 +163,7 @@ const CountrySelectorModal = ({ isOpen, onClose, onAddCountries, existingCountri
                         </div>
 
                         {/* Search & Filters */}
-                        <div className="p-4 border-b border-white/5 bg-[#0a0a0a] space-y-3">
+                        <div className="px-3 py-3 sm:p-4 border-b border-white/5 bg-[#0a0a0a] space-y-3">
                             <div className="relative">
                                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-secondary" />
                                 <input
@@ -177,7 +177,14 @@ const CountrySelectorModal = ({ isOpen, onClose, onAddCountries, existingCountri
                             </div>
 
                             {/* Regions Scrollable Chips */}
-                            <div className="flex gap-2 overflow-x-auto pb-2 -mx-2 px-2 md:mx-0 md:px-0">
+                            <div
+                                className="chips-scroll flex gap-2 overflow-x-scroll pb-2"
+                                style={{
+                                    WebkitOverflowScrolling: 'touch',
+                                    scrollbarWidth: 'thin',
+                                    scrollbarColor: '#1DB954 #181818'
+                                }}
+                            >
                                 <button
                                     onClick={() => setActiveRegion('All')}
                                     className={`whitespace-nowrap px-3 py-1.5 rounded-full text-xs font-medium transition-colors border ${activeRegion === 'All' ? 'bg-spotify-green text-black border-spotify-green' : 'bg-transparent text-text-secondary border-dark-border hover:text-white hover:border-gray-500'}`}

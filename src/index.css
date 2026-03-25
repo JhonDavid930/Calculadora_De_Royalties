@@ -110,3 +110,19 @@
 .driver-popover-close-btn:hover {
   color: #ef4444 !important; /* red-500 al hacer hover para omitir */
 }
+
+/* Custom thin scrollbar for dark theme (WebKit: Chrome, Safari, Edge) */
+.chips-scroll::-webkit-scrollbar {
+  height: 6px;
+}
+.chips-scroll::-webkit-scrollbar-track {
+  background: #181818;
+  border-radius: 3px;
+}
+.chips-scroll::-webkit-scrollbar-thumb {
+  background: #1DB954;
+  border-radius: 3px;
+}
+.chips-scroll::-webkit-scrollbar-thumb:hover {
+  background: #1ed760;
+}
