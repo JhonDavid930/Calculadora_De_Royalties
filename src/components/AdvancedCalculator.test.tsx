@@ -1,13 +1,20 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 
-// Mock recharts to avoid canvas issues in jsdom
-vi.mock('recharts', () => ({
-    PieChart: ({ children }: { children: React.ReactNode }) => <div data-testid="pie-chart">{children}</div>,
-    Pie: ({ children }: { children: React.ReactNode }) => <div data-testid="pie">{children}</div>,
-    Cell: () => <div data-testid="cell" />,
-    ResponsiveContainer: ({ children }: { children: React.ReactNode }) => <div data-testid="responsive-container">{children}</div>,
-    Tooltip: () => <div data-testid="tooltip" />,
+vi.mock('./ui/RevenueDistributionChart', () => ({
+    default: ({ totalRevenue }: { totalRevenue: number }) => (
+        <div>
+            <h3>Distribución de Ingresos</h3>
+            {totalRevenue > 0 ? (
+                <p>Chart ready</p>
+            ) : (
+                <>
+                    <p>Ingresa streams</p>
+                    <p>La gráfica se actualizará al ingresar datos.</p>
+                </>
+            )}
+        </div>
+    ),
 }));
 
 // Mock localStorage

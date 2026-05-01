@@ -1,5 +1,6 @@
 import { useState, useMemo, useCallback } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
+import { createPortal } from 'react-dom';
 import X from 'lucide-react/dist/esm/icons/x';
 import Search from 'lucide-react/dist/esm/icons/search';
 import Check from 'lucide-react/dist/esm/icons/check';
@@ -7,6 +8,7 @@ import Plus from 'lucide-react/dist/esm/icons/plus';
 import Globe from 'lucide-react/dist/esm/icons/globe';
 import ChevronDown from 'lucide-react/dist/esm/icons/chevron-down';
 import ChevronRight from 'lucide-react/dist/esm/icons/chevron-right';
+import ChevronsRight from 'lucide-react/dist/esm/icons/chevrons-right';
 import { COUNTRY_DB } from '../../constants/countries';
 import type { CountrySelectorModalProps, Region, Country } from '../../types';
 
@@ -133,11 +135,11 @@ const CountrySelectorModal = ({ isOpen, onClose, onAddCountries, existingCountri
         );
     }, [selectedSet, handleSelect]);
 
-    return (
+    const modalContent = (
         <AnimatePresence>
             {isOpen && (
                 <div
-                    className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4"
+                    className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-start justify-center overflow-x-auto overflow-y-auto px-2.5 py-3 sm:px-6 sm:py-8 md:py-10 max-[319px]:justify-start"
                     onClick={onClose}
                     style={{ height: '100dvh' }}
                 >
@@ -147,74 +149,92 @@ const CountrySelectorModal = ({ isOpen, onClose, onAddCountries, existingCountri
                         exit={{ opacity: 0, scale: 0.95 }}
                         transition={{ type: 'spring', stiffness: 400, damping: 30 }}
                         onClick={(e) => e.stopPropagation()}
-                        className="bg-[#0a0a0a] border border-white/10 w-full max-w-3xl rounded-2xl shadow-2xl overflow-hidden grid grid-rows-[auto_auto_auto_1fr_auto]"
-                        style={{ height: 'min(80vh, calc(100dvh - 2rem))' }}
+                        className="bg-[#0a0a0a] border border-white/10 w-full max-w-3xl rounded-xl sm:rounded-2xl shadow-2xl overflow-hidden grid grid-rows-[auto_auto_auto_1fr_auto] max-[319px]:min-w-[20rem] h-[min(88dvh,calc(100dvh-1.5rem))] sm:h-[min(82dvh,calc(100dvh-3rem))] md:h-[min(78vh,calc(100dvh-5rem))]"
                     >
 
                         {/* Header */}
-                        <div className="p-4 border-b border-white/5 flex justify-between items-center bg-[#0a0a0a]">
-                            <h3 className="text-lg font-bold text-white flex items-center gap-2">
-                                <Globe className="w-5 h-5 text-spotify-green" />
+                        <div className="min-w-0 w-full p-3 sm:p-4 border-b border-white/5 flex justify-between items-center gap-3 bg-[#0a0a0a] overflow-hidden">
+                            <h3 className="min-w-0 text-base sm:text-lg font-bold text-white flex items-center gap-2">
+                                <Globe className="w-4 h-4 sm:w-5 sm:h-5 text-spotify-green flex-shrink-0" />
                                 Agregar Regiones y Países
                             </h3>
-                            <button onClick={onClose} className="text-text-secondary hover:text-white transition-colors">
-                                <X className="w-6 h-6" />
+                            <button onClick={onClose} aria-label="Cerrar selector" className="text-text-secondary hover:text-white transition-colors flex-shrink-0">
+                                <X className="w-5 h-5 sm:w-6 sm:h-6" />
                             </button>
                         </div>
 
                         {/* Search & Filters */}
-                        <div className="px-3 py-3 sm:p-4 border-b border-white/5 bg-[#0a0a0a] space-y-3">
+                        <div className="min-w-0 w-full px-3 py-2.5 sm:p-4 border-b border-white/5 bg-[#0a0a0a] space-y-2.5 sm:space-y-3 overflow-hidden">
                             <div className="relative">
                                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-secondary" />
                                 <input
                                     type="text"
                                     placeholder="Buscar país por nombre..."
-                                    className="w-full bg-[#181818] border border-white/20 hover:border-white/30 rounded-lg pl-10 pr-4 py-3 text-sm text-white focus:border-spotify-green focus:ring-1 focus:ring-spotify-green outline-none transition-all placeholder:text-text-secondary"
+                                    className="w-full min-w-0 bg-[#181818] border border-white/20 hover:border-white/30 rounded-lg pl-9 pr-3 sm:pl-10 sm:pr-4 py-2.5 sm:py-3 text-sm text-white focus:border-spotify-green focus:ring-1 focus:ring-spotify-green outline-none transition-all placeholder:text-text-secondary"
                                     value={searchTerm}
                                     onChange={(e) => setSearchTerm(e.target.value)}
-                                    autoFocus
                                 />
                             </div>
 
                             {/* Regions Scrollable Chips */}
-                            <div
-                                className="chips-scroll flex gap-2 overflow-x-scroll pb-2"
-                                style={{
-                                    WebkitOverflowScrolling: 'touch',
-                                    scrollbarWidth: 'thin',
-                                    scrollbarColor: '#1DB954 #181818'
-                                }}
-                            >
-                                <button
-                                    onClick={() => setActiveRegion('All')}
-                                    className={`whitespace-nowrap px-3 py-1.5 rounded-full text-xs font-medium transition-colors border ${activeRegion === 'All' ? 'bg-spotify-green text-black border-spotify-green' : 'bg-transparent text-text-secondary border-dark-border hover:text-white hover:border-gray-500'}`}
+                            <div className="relative">
+                                <div
+                                    className="chips-scroll flex gap-1.5 sm:gap-2 overflow-x-auto pb-2 pr-10 snap-x snap-mandatory"
+                                    style={{
+                                        WebkitOverflowScrolling: 'touch',
+                                        scrollbarWidth: 'thin',
+                                        scrollbarColor: '#1DB954 #181818'
+                                    }}
                                 >
-                                    Todos
-                                </button>
-                                {REGIONS.map(region => (
                                     <button
-                                        key={region}
-                                        onClick={() => setActiveRegion(region)}
-                                        className={`whitespace-nowrap px-3 py-1.5 rounded-full text-xs font-medium transition-colors border ${activeRegion === region ? 'bg-spotify-green text-black border-spotify-green' : 'bg-transparent text-text-secondary border-dark-border hover:text-white hover:border-gray-500'}`}
+                                        onClick={() => setActiveRegion('All')}
+                                        className={`snap-start whitespace-nowrap px-3 py-1.5 rounded-full text-xs font-medium transition-colors border ${activeRegion === 'All' ? 'bg-spotify-green text-black border-spotify-green' : 'bg-transparent text-text-secondary border-dark-border hover:text-white hover:border-gray-500'}`}
                                     >
-                                        {region}
+                                        Todos
                                     </button>
-                                ))}
+                                    {REGIONS.map(region => (
+                                        <button
+                                            key={region}
+                                            onClick={() => setActiveRegion(region)}
+                                            className={`snap-start whitespace-nowrap px-3 py-1.5 rounded-full text-xs font-medium transition-colors border ${activeRegion === region ? 'bg-spotify-green text-black border-spotify-green' : 'bg-transparent text-text-secondary border-dark-border hover:text-white hover:border-gray-500'}`}
+                                        >
+                                            {region}
+                                        </button>
+                                    ))}
+                                </div>
+                                <div className="pointer-events-none absolute inset-y-0 right-0 w-12 sm:w-14 bg-gradient-to-l from-[#0a0a0a] via-[#0a0a0a]/90 to-transparent" />
+                                <div className="pointer-events-none absolute right-1 top-1/2 -translate-y-1/2 flex items-center gap-1 rounded-full border border-white/10 bg-[#121212]/95 px-2 py-1 text-[10px] font-semibold uppercase tracking-wider text-spotify-green shadow-lg shadow-black/30 sm:hidden">
+                                    <span>Desliza</span>
+                                    <ChevronsRight className="w-3 h-3" />
+                                </div>
                             </div>
+                            <p className="text-[11px] text-text-muted sm:hidden">
+                                Desliza horizontalmente para ver todas las regiones.
+                            </p>
                         </div>
 
                         {/* Bulk Actions Bar */}
-                        <div className="flex justify-between items-center px-4 py-2 border-b border-white/5 bg-[#121212] text-xs shadow-sm z-10 relative">
+                        <div className="min-w-0 w-full flex flex-col gap-2 px-3 sm:px-4 py-2 border-b border-white/5 bg-[#121212] text-xs shadow-sm z-10 relative sm:flex-row sm:items-center sm:justify-between overflow-hidden">
                             <span className="text-text-secondary font-medium">
                                 {availableCountries.length} {availableCountries.length === 1 ? 'país encontrado' : 'países encontrados'}
                             </span>
-                            <div className="flex items-center gap-2">
+                            <div className="min-w-0 flex w-full flex-wrap items-center justify-start gap-2 sm:w-auto sm:justify-end">
                                 {groupedCountries && (
                                     <button
                                         onClick={toggleAllRegions}
                                         className="font-bold text-text-muted hover:text-white transition-colors uppercase tracking-wider text-[10px] py-1 px-2 rounded hover:bg-dark-hover border border-transparent hover:border-dark-border"
                                     >
-                                        {collapsedRegions.size === Object.keys(groupedCountries).length ? "Expandir Regiones" : "Contraer Regiones"}
+                                        {collapsedRegions.size === Object.keys(groupedCountries).length ? (
+                                            <>
+                                                <span className="lg:hidden">Expandir</span>
+                                                <span className="hidden lg:inline">Expandir Regiones</span>
+                                            </>
+                                        ) : (
+                                            <>
+                                                <span className="lg:hidden">Contraer</span>
+                                                <span className="hidden lg:inline">Contraer Regiones</span>
+                                            </>
+                                        )}
                                     </button>
                                 )}
                                 <button
@@ -222,13 +242,25 @@ const CountrySelectorModal = ({ isOpen, onClose, onAddCountries, existingCountri
                                     className={`font-bold uppercase tracking-wider text-[10px] py-1 px-2 rounded transition-colors ${availableCountries.length === 0 ? 'text-text-muted cursor-not-allowed' : 'text-spotify-green hover:text-green-400 hover:bg-spotify-green/10'}`}
                                     disabled={availableCountries.length === 0}
                                 >
-                                    {isAllSelected ? "Deseleccionar esta vista" : "Seleccionar esta vista"}
+                                    {isAllSelected ? (
+                                        <>
+                                            <span className="md:hidden">Deseleccionar</span>
+                                            <span className="hidden md:inline lg:hidden">Deseleccionar vista</span>
+                                            <span className="hidden lg:inline">Deseleccionar esta vista</span>
+                                        </>
+                                    ) : (
+                                        <>
+                                            <span className="md:hidden">Seleccionar</span>
+                                            <span className="hidden md:inline lg:hidden">Seleccionar vista</span>
+                                            <span className="hidden lg:inline">Seleccionar esta vista</span>
+                                        </>
+                                    )}
                                 </button>
                             </div>
                         </div>
 
                         {/* List Area */}
-                        <div className="overflow-y-auto p-3 bg-[#0a0a0a]">
+                        <div className="min-w-0 w-full overflow-x-hidden overflow-y-auto p-2.5 sm:p-3 bg-[#0a0a0a]">
                             {availableCountries.length > 0 ? (
                                 groupedCountries ? (
                                     // Grouped View (No strict filters active)
@@ -283,18 +315,18 @@ const CountrySelectorModal = ({ isOpen, onClose, onAddCountries, existingCountri
                         </div>
 
                         {/* Footer */}
-                        <div className="p-4 border-t border-white/5 bg-[#0a0a0a] flex justify-between items-center">
-                            <span className="text-sm font-medium text-text-primary bg-[#121212] px-3 py-1 rounded-full border border-white/10">
+                        <div className="min-w-0 w-full flex items-center gap-2 border-t border-white/5 bg-[#0a0a0a] p-3 sm:p-4 sm:justify-between overflow-hidden max-[359px]:flex-col max-[359px]:items-start">
+                            <span className="text-sm font-medium text-text-primary bg-[#121212] px-3 py-1 rounded-full border border-white/10 shrink-0">
                                 <span className={selectedCodes.length > 0 ? 'text-spotify-green' : ''}>{selectedCodes.length}</span> seleccionados
                             </span>
-                            <div className="flex gap-3">
-                                <button onClick={onClose} className="px-4 py-2 rounded-lg text-sm font-medium text-text-secondary hover:text-white transition-colors">
+                            <div className="ml-auto flex min-w-0 max-w-full flex-1 justify-end gap-2 sm:flex-none sm:gap-3 max-[359px]:ml-0 max-[359px]:w-full max-[359px]:justify-between">
+                                <button onClick={onClose} className="rounded-lg px-3 py-2 text-xs sm:px-4 sm:text-sm font-medium text-text-secondary transition-colors hover:text-white">
                                     Cancelar
                                 </button>
                                 <button
                                     onClick={handleAdd}
                                     disabled={selectedCodes.length === 0}
-                                    className={`flex items-center gap-2 px-6 py-2 rounded-lg text-sm font-bold text-black transition-all shadow-lg ${selectedCodes.length > 0 ? 'bg-spotify-green hover:bg-spotify-light shadow-green-900/20 hover:scale-[1.02] active:scale-[0.98]' : 'bg-gray-600 cursor-not-allowed opacity-50'}`}
+                                    className={`flex items-center justify-center gap-2 rounded-lg px-3 py-2 text-xs sm:px-6 sm:text-sm font-bold text-black transition-all shadow-lg ${selectedCodes.length > 0 ? 'bg-spotify-green hover:bg-spotify-light shadow-green-900/20 hover:scale-[1.02] active:scale-[0.98]' : 'bg-gray-600 cursor-not-allowed opacity-50'}`}
                                 >
                                     <Plus className="w-4 h-4" />
                                     Agregar
@@ -306,6 +338,8 @@ const CountrySelectorModal = ({ isOpen, onClose, onAddCountries, existingCountri
             )}
         </AnimatePresence>
     );
+
+    return createPortal(modalContent, document.body);
 };
 
 export default CountrySelectorModal;

@@ -26,6 +26,9 @@ const GoalCalculator = () => {
     ];
 
     const streamsNeeded = Math.ceil((Number(goalAmount) || 0) / goalAvgRate);
+    const premiumRate = audienceOptions[0].val;
+    const selectedAudience = audienceOptions.find((option) => option.val === goalAvgRate) ?? audienceOptions[1];
+    const extraVolumeVsPremium = Math.round(((premiumRate / goalAvgRate) - 1) * 100);
 
     return (
         <div className="max-w-4xl mx-auto">
@@ -99,8 +102,18 @@ const GoalCalculator = () => {
                             <Info className="w-3 h-3" /> Tip de crecimiento:
                         </p>
                         <p className="text-sm text-text-primary">
-                            Para llegar a esta meta con audiencia de <strong>Latinoamérica</strong>, necesitas aproximadamente un
-                            <span className="text-spotify-green font-bold"> 40% más</span> de volumen que con audiencia de EE.UU.
+                            {goalAvgRate >= premiumRate ? (
+                                <>
+                                    Tu perfil actual de <strong>{selectedAudience.label}</strong> ya está en el rango premium,
+                                    así que necesitas el menor volumen posible para alcanzar esta meta.
+                                </>
+                            ) : (
+                                <>
+                                    Con tu perfil de <strong>{selectedAudience.label}</strong>, necesitas aproximadamente un
+                                    <span className="text-spotify-green font-bold"> {extraVolumeVsPremium}% más</span> de
+                                    volumen que con una audiencia Tier 1.
+                                </>
+                            )}
                         </p>
                     </div>
                 </motion.div>

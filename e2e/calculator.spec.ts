@@ -20,11 +20,11 @@ test.describe('RoyaltyPro Core Calculations', () => {
         await page.getByRole('button', { name: /Selector Masivo/i }).click();
 
         // Select USA
-        await page.getByPlaceholder('Buscar país...').fill('United States');
-        await page.getByText('United States', { exact: true }).click();
+        await page.getByPlaceholder(/Buscar país/i).fill('United States');
+        await page.locator('div[role="option"]').filter({ hasText: 'United States' }).first().click();
 
         // Add them
-        await page.getByRole('button', { name: 'Agregar Selección' }).click();
+        await page.getByRole('button', { name: /^Agregar$/i }).click();
 
         // Input streams
         const streamsInput = page.getByPlaceholder('0').first();
@@ -32,8 +32,8 @@ test.describe('RoyaltyPro Core Calculations', () => {
 
         // The calculation happens automatically
 
-        // Validate USA rate is $0.0040 -> $4,000.00
-        const totalValue = page.getByText('$4,000.00').first();
+        // Validate USA rate is $0.0042 -> $4,200.00
+        const totalValue = page.getByText('$4,200.00').first();
         await expect(totalValue).toBeVisible();
     });
 
@@ -42,14 +42,14 @@ test.describe('RoyaltyPro Core Calculations', () => {
         await page.getByRole('button', { name: /Selector Masivo/i }).click();
 
         // Select MX and ES
-        await page.getByPlaceholder('Buscar país...').fill('Mexico');
-        await page.getByText('Mexico', { exact: true }).click();
+        await page.getByPlaceholder(/Buscar país/i).fill('Mexico');
+        await page.locator('div[role="option"]').filter({ hasText: 'Mexico' }).first().click();
 
-        await page.getByPlaceholder('Buscar país...').fill('Spain');
-        await page.getByText('Spain', { exact: true }).click();
+        await page.getByPlaceholder(/Buscar país/i).fill('Spain');
+        await page.locator('div[role="option"]').filter({ hasText: 'Spain' }).first().click();
 
         // Add them
-        await page.getByRole('button', { name: 'Agregar Selección' }).click();
+        await page.getByRole('button', { name: /^Agregar$/i }).click();
 
         // Verify inputs exist by checking the country select values
         await expect(page.locator('select').filter({ hasText: 'Mexico' }).first()).toBeVisible();

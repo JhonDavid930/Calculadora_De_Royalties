@@ -60,15 +60,15 @@ export default function App() {
             <div className="absolute top-[-10%] left-1/2 -translate-x-1/2 w-[60vw] h-[500px] bg-spotify-green/10 rounded-[100%] blur-[120px] pointer-events-none" />
             
             <header className="glass-header sticky top-0 z-50">
-                <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
-                    <div className="flex items-center gap-2">
+                <div className="max-w-6xl mx-auto px-3 sm:px-4 h-16 flex items-center justify-between gap-2">
+                    <div className="flex min-w-0 items-center gap-2">
                         <div className="bg-spotify-green p-1.5 rounded-full mt-1.5 sm:mt-0">
                             <Music className="w-5 h-5 text-black" />
                         </div>
                         <h1 className="text-xl font-bold tracking-tight hidden sm:block">RoyaltyPro <span className="text-text-secondary font-normal text-sm ml-2">Estimador de Ingresos</span></h1>
                         <h1 className="text-lg font-bold tracking-tight sm:hidden">RoyaltyPro</h1>
                     </div>
-                    <div className="flex items-center gap-2">
+                    <div className="flex min-w-0 items-center gap-1.5 sm:gap-2">
                         <InstallPrompt />
                         <button
                             onClick={startTour}
@@ -77,12 +77,13 @@ export default function App() {
                         >
                             <HelpCircle className="w-5 h-5" />
                         </button>
-                        <nav id="tour-tabs" className="flex gap-1 bg-dark-border p-1 rounded-full overflow-x-auto relative">
+                        <nav id="tour-tabs" className="relative flex min-w-0 max-w-full gap-0.5 sm:gap-1 overflow-x-auto rounded-full bg-dark-border p-1">
                             {tabs.map(tab => (
                                 <button
                                     key={tab.id}
                                     onClick={() => setActiveTab(tab.id)}
-                                    className={`relative flex items-center gap-2 px-4 py-1.5 rounded-full text-sm font-medium transition-all duration-300 ease-out whitespace-nowrap z-10 active:scale-[0.97] hover:-translate-y-0.5 ${activeTab === tab.id
+                                    aria-label={tab.label}
+                                    className={`relative flex items-center justify-center gap-1 sm:gap-2 px-3 sm:px-4 py-1.5 rounded-full text-sm font-medium transition-all duration-300 ease-out whitespace-nowrap z-10 active:scale-[0.97] hover:-translate-y-0.5 ${activeTab === tab.id
                                         ? 'text-black'
                                         : 'text-text-secondary hover:text-white hover:bg-white/5'
                                         }`}
@@ -95,7 +96,7 @@ export default function App() {
                                         />
                                     )}
                                     <span className="relative z-10 flex items-center gap-2">
-                                        <tab.icon className="w-4 h-4" />
+                                        <tab.icon className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                                         <span className="hidden sm:inline">{tab.label}</span>
                                     </span>
                                 </button>

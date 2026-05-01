@@ -1,6 +1,26 @@
 # Registro de Cambios (CHANGELOG)
 
-Version actual: **v2.4.0** (UI Premium & Modal Fix)
+Version actual: **v2.4.1** (QA Hardening & Lazy Charts)
+
+## [v2.4.1] - 2026-05-01 - QA Hardening, E2E Repair & Lazy Charts
+### Corregido
+- **Playwright E2E:** Los flujos del selector masivo quedaron realineados con la UI actual del modal (`Buscar país por nombre...`, botón `Agregar` y selección por `role="option"`), eliminando los timeouts cross-browser.
+- **Expectativa de USA:** El test E2E de cálculo avanzado ahora valida la tarifa vigente de `United States` (`0.0042`), corrigiendo el total esperado a `$4,200.00`.
+- **Responsive Hardening:** El `CountrySelectorModal` fue rehecho para viewports estrechos y landscape corto. El footer vuelve a ser visible en `320px`, las acciones del modal ya no se fugan horizontalmente y la barra de acciones se compacta por breakpoint.
+- **Fixed Positioning Real:** `CountrySelectorModal` y `ConfirmModal` ahora se renderizan con `createPortal(document.body)` para evitar clipping causado por los `transform` del contenedor animado principal.
+
+### Cambiado
+- **Lazy Loading de Gráficas:** `Distribución de Ingresos` fue extraído a un `Component` lazy (`RevenueDistributionChart`) para sacar `recharts` del bundle principal y mejorar el arranque inicial de la vista detallada.
+- **Build Tooling:** Upgrade del stack de desarrollo a una combinación estable y compatible (`Vite 7.3.2`, `@vitejs/plugin-react 5.1.4`, `Vitest 4.1.5`, `Playwright 1.59.1`, `PostCSS 8.5.12`).
+- **Chunking más Limpio:** Eliminado el chunk manual `vendor` vacío de Vite; se mantiene separación explícita para `charts` e `icons`.
+- **Header Mobile:** La navegación superior se compactó en móvil pequeño con `aria-labels` en tabs icon-only, menos padding y mejor ajuste horizontal.
+
+### Seguridad
+- **Supply Chain:** `npm audit` quedó en `0 vulnerabilities` tras actualizar dependencias y aplicar fixes transitivos seguros.
+
+### Validado
+- **Responsive QA Matrix:** Validados breakpoints críticos `320x568`, `360x740`, `375x667`, `390x844`, `412x915`, `640x360`, `667x375`, `844x390`, `768x1024`, `1024x768` y `1440x1024`.
+- **Release Gate:** Verificados `npm audit`, `build`, `79/79` tests de Vitest y `9/9` tests E2E en Chromium, Firefox y WebKit.
 
 ## [v2.4.0] - 2025-03-21 - Glassmorphism UI & CountrySelectorModal Fix
 ### Corregido
