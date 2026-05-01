@@ -1,10 +1,11 @@
 import { motion, AnimatePresence } from 'motion/react';
+import { createPortal } from 'react-dom';
 import AlertCircle from 'lucide-react/dist/esm/icons/alert-circle';
 import X from 'lucide-react/dist/esm/icons/x';
 import type { ConfirmModalProps } from '../../types';
 
 const ConfirmModal = ({ isOpen, onClose, onConfirm, title, message, confirmText = "Confirmar", cancelText = "Cancelar" }: ConfirmModalProps) => {
-    return (
+    const modalContent = (
         <AnimatePresence>
             {isOpen && (
                 <motion.div
@@ -83,6 +84,8 @@ const ConfirmModal = ({ isOpen, onClose, onConfirm, title, message, confirmText 
             )}
         </AnimatePresence>
     );
+
+    return createPortal(modalContent, document.body);
 };
 
 export default ConfirmModal;

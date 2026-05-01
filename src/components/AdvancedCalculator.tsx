@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { lazy, Suspense, useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import DollarSign from 'lucide-react/dist/esm/icons/dollar-sign';
 import BarChart3 from 'lucide-react/dist/esm/icons/bar-chart-3';
@@ -9,21 +9,24 @@ import Plus from 'lucide-react/dist/esm/icons/plus';
 import Trash2 from 'lucide-react/dist/esm/icons/trash-2';
 import RefreshCcw from 'lucide-react/dist/esm/icons/refresh-ccw';
 import Layers from 'lucide-react/dist/esm/icons/layers';
-import {
-    PieChart,
-    Pie,
-    Cell,
-    ResponsiveContainer,
-    Tooltip as RechartsTooltip,
-} from 'recharts';
 import Card from './ui/Card';
 import StatBox from './ui/StatBox';
 import AnimatedCounter from './ui/AnimatedCounter';
-import { COUNTRY_DB, COLORS } from '../constants/countries';
+import { COUNTRY_DB } from '../constants/countries';
 import CountrySelectorModal from './ui/CountrySelectorModal';
 import ConfirmModal from './ui/ConfirmModal';
 
 import { useRoyaltyCalculations } from '../hooks/useRoyaltyCalculations';
+
+const RevenueDistributionChart = lazy(() => import('./ui/RevenueDistributionChart'));
+
+const RevenueDistributionFallback = () => (
+    <Card>
+        <h3 className="text-md font-bold mb-4 text-text-secondary">Distribución de Ingresos</h3>
+        <div className="h-64 w-full rounded-lg border border-white/10 bg-white/[0.02] animate-pulse"></div>
+        <p className="text-center text-xs text-text-muted mt-4">Cargando visualización de ingresos...</p>
+    </Card>
+);
 
 const AdvancedCalculator = () => {
     const {
@@ -125,7 +128,7 @@ const AdvancedCalculator = () => {
                                             animate={{ opacity: 1, height: 'auto', scale: 1 }}
                                             exit={{ opacity: 0, height: 0, scale: 0.95 }}
                                             transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-                                            className="group bg-dark-bg md:bg-transparent p-4 md:p-0 rounded-lg md:rounded-none border border-dark-border md:border-0 md:border-b md:border-dark-border transition-colors duration-200 hover:bg-dark-hover/50 md:hover:bg-white/5 grid grid-cols-1 md:grid-cols-12 gap-4 items-center relative"
+                                            className="group bg-transparent p-4 md:p-0 rounded-lg md:rounded-none border border-white/5 md:border-0 md:border-b transition-colors duration-200 hover:bg-white/[0.03] grid grid-cols-1 md:grid-cols-12 gap-4 items-center relative"
                                         >
 
                                             {/* Selector de País */}
@@ -133,13 +136,13 @@ const AdvancedCalculator = () => {
                                                 <label className="block md:hidden text-xs text-text-secondary mb-1">País</label>
                                                 <div className="relative">
                                                     <select
-                                                        className={`w-full bg-[#222] border border-transparent rounded p-3 md:p-2 outline-none focus:border-spotify-green cursor-pointer appearance-none ${!item.country ? 'text-text-muted' : 'text-text-primary font-medium'} text-base`}
+                                                        className={`w-full bg-transparent border border-transparent rounded p-3 md:p-2 outline-none cursor-pointer appearance-none ${!item.country ? 'text-text-muted' : 'text-text-primary font-medium'} text-base transition-colors hover:bg-white/5 focus:bg-white/10`}
                                                         value={item.country}
                                                         onChange={(e) => selectCountry(item.id, e.target.value)}
                                                     >
-                                                        <option value="" disabled>Selecciona un país...</option>
+                                                        <option value="" disabled className="bg-[#121212] text-white">Selecciona un país...</option>
                                                         {COUNTRY_DB.map(c => (
-                                                            <option key={c.code} value={c.name}>
+                                                            <option key={c.code} value={c.name} className="bg-[#121212] text-white">
                                                                 {c.name}
                                                             </option>
                                                         ))}
@@ -222,64 +225,13 @@ const AdvancedCalculator = () => {
                 </div>
 
                 <div className="space-y-6">
-                    <Card>
-                        <h3 className="text-md font-bold mb-4 text-text-secondary">Distribución de Ingresos</h3>
-                        <div className="h-64 w-full relative">
-                            <ResponsiveContainer width="100%" height="100%">
-                                <PieChart>
-                                    <Pie
-                                        data={chartData}
-                                        cx="50%"
-                                        cy="50%"
-                                        innerRadius={60}
-                                        outerRadius={80}
-                                        paddingAngle={5}
-                                        dataKey="value"
-                                    >
-                                        {chartData.map((entry, index) => (
-                                            <Cell
-                                                key={`cell-${index}`}
-                                                fill={entry.name === 'Sin datos' ? '#282828' : COLORS[index % COLORS.length]}
-                                                stroke="none"
-                                            />
-                                        ))}
-                                    </Pie>
-                                    {totalRevenue > 0 && (
-                                        <RechartsTooltip
-                                            contentStyle={{ backgroundColor: '#181818', borderColor: '#282828', borderRadius: '8px' }}
-                                            itemStyle={{ color: '#fff' }}
-                                            formatter={(value: number) => formatCurrency(value)}
-                                        />
-                                    )}
-                                </PieChart>
-                            </ResponsiveContainer>
-                            <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                                <div className="text-center">
-                                    {totalRevenue > 0 ? (
-                                        <>
-                                            <span className="text-xs text-text-secondary">Total</span>
-                                            <p className="font-bold text-text-primary text-lg">{formatCurrency(totalRevenue)}</p>
-                                        </>
-                                    ) : (
-                                        <span className="text-xs text-text-muted">Ingresa streams</span>
-                                    )}
-                                </div>
-                            </div>
-                        </div>
-                        <div className="space-y-2 mt-2">
-                            {totalRevenue > 0 ? chartData.slice(0, 5).map((item, idx) => (
-                                <div key={idx} className="flex justify-between items-center text-xs">
-                                    <div className="flex items-center gap-2">
-                                        <div className="w-2 h-2 rounded-full" style={{ backgroundColor: COLORS[idx % COLORS.length] }}></div>
-                                        <span className="text-text-secondary">{item.name}</span>
-                                    </div>
-                                    <span className="text-text-primary font-mono">{formatCurrency(item.value)}</span>
-                                </div>
-                            )) : (
-                                <p className="text-center text-xs text-text-muted">La gráfica se actualizará al ingresar datos.</p>
-                            )}
-                        </div>
-                    </Card>
+                    <Suspense fallback={<RevenueDistributionFallback />}>
+                        <RevenueDistributionChart
+                            chartData={chartData}
+                            totalRevenue={totalRevenue}
+                            formatCurrency={formatCurrency}
+                        />
+                    </Suspense>
                 </div>
             </div>
 

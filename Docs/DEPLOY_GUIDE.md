@@ -22,6 +22,13 @@
     ```bash
     npm test
     ```
+5.  Antes de hacer Deploy real, corre esta batería mínima:
+    ```bash
+    npm audit
+    npm run build
+    npm run test -- --run
+    npm run test:e2e
+    ```
 
 ---
 

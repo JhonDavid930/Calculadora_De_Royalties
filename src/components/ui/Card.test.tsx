@@ -11,9 +11,7 @@ describe('Card', () => {
     it('should apply default styling classes', () => {
         const { container } = render(<Card>Content</Card>);
         const div = container.firstChild as HTMLElement;
-        expect(div.className).toContain('bg-dark-surface');
-        expect(div.className).toContain('rounded-lg');
-        expect(div.className).toContain('border');
+        expect(div.className).toContain('glass-panel');
     });
 
     it('should merge custom className', () => {
@@ -21,7 +19,7 @@ describe('Card', () => {
         const div = container.firstChild as HTMLElement;
         expect(div.className).toContain('p-8');
         expect(div.className).toContain('custom-test');
-        expect(div.className).toContain('bg-dark-surface');
+        expect(div.className).toContain('glass-panel');
     });
 
     it('should render complex children', () => {

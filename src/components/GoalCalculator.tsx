@@ -26,6 +26,9 @@ const GoalCalculator = () => {
     ];
 
     const streamsNeeded = Math.ceil((Number(goalAmount) || 0) / goalAvgRate);
+    const premiumRate = audienceOptions[0].val;
+    const selectedAudience = audienceOptions.find((option) => option.val === goalAvgRate) ?? audienceOptions[1];
+    const extraVolumeVsPremium = Math.round(((premiumRate / goalAvgRate) - 1) * 100);
 
     return (
         <div className="max-w-4xl mx-auto">
@@ -45,7 +48,7 @@ const GoalCalculator = () => {
                                     type="number"
                                     value={goalAmount}
                                     onChange={(e) => setGoalAmount(e.target.value)}
-                                    className="w-full bg-dark-surface border border-dark-hover hover:border-text-muted rounded-md py-4 pl-10 pr-4 text-2xl font-bold text-text-primary focus:outline-none focus:border-spotify-green focus:ring-2 focus:ring-spotify-green/50 transition-colors duration-200"
+                                    className="w-full glass-input pl-10 pr-4 py-4 text-2xl font-bold"
                                 />
                             </div>
                         </div>
@@ -62,7 +65,7 @@ const GoalCalculator = () => {
                                         whileTap={{ scale: 0.98 }}
                                         className={`p-3 rounded-md text-left border cursor-pointer transition-colors duration-200 ${goalAvgRate === option.val
                                             ? 'bg-spotify-green/10 border-spotify-green ring-1 ring-spotify-green/50'
-                                            : 'bg-dark-surface border-dark-border hover:border-text-muted hover:bg-dark-hover'
+                                            : 'bg-white/5 border-white/10 hover:border-white/20 hover:bg-white/10'
                                             }`}
                                     >
                                         <div className="flex justify-between items-center">
@@ -81,7 +84,7 @@ const GoalCalculator = () => {
                     initial={{ opacity: 0, scale: 0.95 }}
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ type: 'spring', stiffness: 300, damping: 30, delay: 0.15 }}
-                    className="bg-dark-surface p-8 rounded-2xl border border-dark-border flex flex-col items-center justify-center text-center h-full relative overflow-hidden"
+                    className="glass-panel hover:shadow-neon p-8 flex flex-col items-center justify-center text-center h-full relative overflow-hidden"
                 >
                     <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-transparent via-spotify-green to-transparent opacity-50"></div>
 
@@ -99,8 +102,18 @@ const GoalCalculator = () => {
                             <Info className="w-3 h-3" /> Tip de crecimiento:
                         </p>
                         <p className="text-sm text-text-primary">
-                            Para llegar a esta meta con audiencia de <strong>Latinoamérica</strong>, necesitas aproximadamente un
-                            <span className="text-spotify-green font-bold"> 40% más</span> de volumen que con audiencia de EE.UU.
+                            {goalAvgRate >= premiumRate ? (
+                                <>
+                                    Tu perfil actual de <strong>{selectedAudience.label}</strong> ya está en el rango premium,
+                                    así que necesitas el menor volumen posible para alcanzar esta meta.
+                                </>
+                            ) : (
+                                <>
+                                    Con tu perfil de <strong>{selectedAudience.label}</strong>, necesitas aproximadamente un
+                                    <span className="text-spotify-green font-bold"> {extraVolumeVsPremium}% más</span> de
+                                    volumen que con una audiencia Tier 1.
+                                </>
+                            )}
                         </p>
                     </div>
                 </motion.div>

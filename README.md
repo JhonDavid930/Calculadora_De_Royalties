@@ -36,23 +36,25 @@ Este proyecto utiliza tecnologías de vanguardia para garantizar precisión fina
 
 - **Frontend**: [React.js](https://reactjs.org/) + **TypeScript** (strict mode) con Custom Hooks para gestión de estado complejo.
 - **Tipado**: TypeScript estricto — 17 componentes/hooks tipados, **Branded Types** (Zod), 0 errores en compilador (`tsc --noEmit`).
-- **Testing**: 57+ unit tests (Vitest + React Testing Library) + E2E (Playwright). 100% green.
+- **Testing**: 79 tests lógicos/UI (Vitest + React Testing Library) + E2E (Playwright). 100% green.
+- **Supply Chain Security**: Árbol de dependencias auditado con `npm audit` en verde al cierre de la revisión.
 - **Animaciones Premium**: [Framer Motion](https://motion.dev/) gestiona transiciones espaciales, interpolación de variables numéricas a 60fps e interacciones de física *Spring*.
 - **Precisión Financiera**: [currency.js](https://currency.js.org/) para evitar errores aritméticos de coma flotante en cálculos monetarios.
 - **Validación de Datos**: [Zod](https://zod.dev/) para asegurar la integridad de los datos de entrada.
 - **Persistencia**: `localStorage` para autoguardado de progreso entre sesiones y cambios de vista.
 - **Estilos**: [Tailwind CSS](https://tailwindcss.com/) (Diseño "Dark Mode" premium inspirado en Spotify).
-- **Gráficos**: [Recharts](https://recharts.org/) (Distribución de ingresos interactiva).
-- **Herramienta de Construcción**: [Vite](https://vitejs.dev/).
+- **Gráficos**: [Recharts](https://recharts.org/) con **lazy loading** para no cargar la visualización de ingresos en el bundle inicial.
+- **Herramienta de Construcción**: [Vite](https://vitejs.dev/) `7.3.2`.
 
 ## 🌟 Features
 - **Spotify Streaming Calculator**: Convierte reproducciones asimétricas en ingresos de master y publishing.
 - **Top 50 Countries Database**: Soporte para los mercados principales basados en datos recientes.
 - **Visualización de Datos**: Gráficos interactivos de distribución de ingresos usando Recharts.
+- **Carga Inicial Más Ligera**: La vista detallada difiere el bloque de gráficas a un chunk separado para mejorar el arranque inicial.
 - **Modo Oscuro Permanente**: UX premium al estilo de plataformas musicales.
 - **Cero Saltos Visuales**: Interfaz dinámica impulsada por *Framer Motion*, con *fade blur* en cambios de contexto y contadores numéricos de rotación rápida.
 - **PWA (Progressive Web App)**: Instalable como app nativa en iOS, Android y Escritorio con soporte offline y sistema robusto de actualización (service workers).
-- **Responsive Design**: Interfaces adaptadas a móvil, tablet y escritorio (grid responsivo auditado).
+- **Responsive Design**: Interfaces adaptadas a móvil, tablet y escritorio con auditoría específica de breakpoints críticos y hardening del modal principal.
 - **Accesibilidad (A11y)**: Navegación completa por teclado con focus rings visibles y modales ARIA-compliant.
 - **Micro-Interacciones**: Feedback táctil guiado por botones tipo "spring" escalares.
 - **Data Persistence**: La calculadora recuerda los países seleccionados tras cerrar el navegador.
@@ -74,6 +76,17 @@ Si eres desarrollador y quieres correr este proyecto localmente:
    npm run dev
    ```
 4. Abre `http://localhost:5173` en tu navegador.
+
+## ✅ Pre-Release Checklist
+
+Antes de desplegar, esta es la batería mínima recomendada:
+
+```bash
+npm audit
+npm run build
+npm run test -- --run
+npm run test:e2e
+```
 
 ---
 Desarrollado para potenciar la transparencia en los ingresos de la industria musical. 🎧✨

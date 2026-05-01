@@ -11,7 +11,7 @@ describe('GoalCalculator', () => {
     it('should render all audience options', () => {
         render(<GoalCalculator />);
         expect(screen.getByText('Tier 1 (US/UK/EU)')).toBeInTheDocument();
-        expect(screen.getByText('Tier 3 (LatAm/Mix)')).toBeInTheDocument();
+        expect(screen.getAllByText('Tier 3 (LatAm/Mix)').length).toBeGreaterThan(0);
         expect(screen.getByText('Tier 5 (Viral/Free)')).toBeInTheDocument();
     });
 
@@ -47,7 +47,18 @@ describe('GoalCalculator', () => {
     it('should display the growth tip', () => {
         render(<GoalCalculator />);
         expect(screen.getByText(/Tip de crecimiento/)).toBeInTheDocument();
-        expect(screen.getByText(/40% más/)).toBeInTheDocument();
+        expect(screen.getByText(/60% más/)).toBeInTheDocument();
+        expect(screen.getAllByText(/Tier 3 \(LatAm\/Mix\)/).length).toBeGreaterThan(0);
+    });
+
+    it('should adapt the growth tip to the selected audience profile', () => {
+        render(<GoalCalculator />);
+
+        fireEvent.click(screen.getByText('Tier 1 (US/UK/EU)'));
+        expect(screen.getByText(/rango premium/i)).toBeInTheDocument();
+
+        fireEvent.click(screen.getByText('Tier 5 (Viral/Free)'));
+        expect(screen.getByText(/233% más/)).toBeInTheDocument();
     });
 
     it('should show "Streams Mensuales" label', () => {
